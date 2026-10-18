@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Building2, Github, ExternalLink, Code2, Award, Edit3, Check } from 'lucide-react';
+import { Building2, Github, Code2, Edit3, Check } from 'lucide-react';
 
 interface AgencyRecord {
   id: string;
@@ -31,10 +31,10 @@ export default function AgencyShowcase() {
       deliverables: [
         'Awwwards SOTD ödüllü 3D etkileşimli marka deneyimleri (Three.js & Canvas)',
         'Yüksek eşzamanlı video streaming ve ses senkronizasyon boru hattı',
-        'Mikro-animasyon ve GSAP ticker tabanlı sıfır-jank arayüz standardizasyonu',
+        'Mikro-animasyon ve GSAP ticker tabanlı arayüz standardizasyonu',
       ],
       focusArea: 'Avangart Web, WebGL ve Yaratıcı Mühendislik',
-      keyOutcome: '3 Uluslararası Web Ödülü, 450k+ Tekil Ziyaretçi Deneyimi',
+      keyOutcome: '3 Uluslararası Web Ödülü, 450k+ Ziyaretçi Deneyimi',
     },
     {
       id: 'agency-2',
@@ -44,7 +44,7 @@ export default function AgencyShowcase() {
       deliverables: [
         'ESP32 ve RS485 Modbus-RTU tabanlı tarım ve fabrika sensör telemetrisi',
         'FastAPI ve MQTT broker köprüleri ile endüstriyel PLC entegrasyonu',
-        'SOP operasyonel matrisleri ve saha teknisyeni mobil web arayüzleri',
+        'SOP operasyonel matrisleri ve saha teknisyeni mobil arayüzleri',
       ],
       focusArea: 'Fiziksel Hesaplama, Gömülü Sistemler ve SOP Mimarisi',
       keyOutcome: '%38 Enerji ve Zaman Verimliliği Artışı, 12 Tesis Kurulumu',
@@ -57,7 +57,7 @@ export default function AgencyShowcase() {
       stars: 142,
       forks: 28,
       language: 'C++',
-      description: 'Galvanik izoleli RS485 hatları için FreeRTOS tabanlı deterministik Modbus-RTU master sürücüsü.',
+      description: 'Galvanik izoleli RS485 hatları için FreeRTOS tabanlı Modbus-RTU sürücüsü.',
       link: '#',
     },
     {
@@ -65,7 +65,7 @@ export default function AgencyShowcase() {
       stars: 384,
       forks: 67,
       language: 'TypeScript',
-      description: 'Web Workers ve OffscreenCanvas üzerinde 60 FPS çalışan hafif 3D uzay ve fizik motoru.',
+      description: 'Web Workers ve OffscreenCanvas üzerinde çalışan hafif 3D uzay ve fizik motoru.',
       link: '#',
     },
     {
@@ -73,7 +73,7 @@ export default function AgencyShowcase() {
       stars: 215,
       forks: 34,
       language: 'Python',
-      description: 'Düşük gecikmeli telemetri akışları ve Firebase eşitlemesi için asenkron Pydantic v2 boru hattı.',
+      description: 'Düşük gecikmeli telemetri akışları ve Firebase eşitlemesi için Pydantic v2 boru hattı.',
       link: '#',
     },
   ]);
@@ -91,11 +91,6 @@ export default function AgencyShowcase() {
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 pb-8 border-b border-white/10">
           <div>
-            <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-zinc-500 mb-2">
-              <span>Mühendislik Arka Planı</span>
-              <span aria-hidden="true">·</span>
-              <span>2 Farklı Ajans Deneyimi &amp; GitHub</span>
-            </div>
             <h2 className="text-3xl md:text-5xl font-bold text-white tracking-tight font-display">
               Çalışılan Ajanslar &amp; Açık Kaynak
             </h2>
@@ -118,7 +113,7 @@ export default function AgencyShowcase() {
                 <div className="flex items-center justify-between pb-4 border-b border-white/10 mb-6">
                   <div className="flex items-center gap-2 text-xs font-mono text-zinc-400">
                     <Building2 className="w-4 h-4 text-zinc-400" />
-                    <span>AJANS 0{idx + 1}</span>
+                    <span>Ajans Deneyimi</span>
                   </div>
                   <span className="text-xs font-mono text-zinc-500">{agency.period}</span>
                 </div>
@@ -126,7 +121,7 @@ export default function AgencyShowcase() {
                 {isEditing ? (
                   <div className="space-y-3 mb-6">
                     <div>
-                      <label className="text-[10px] font-mono text-zinc-500 block mb-1">Ajans Adı</label>
+                      <label className="text-xs font-mono text-zinc-500 block mb-1">Ajans Adı</label>
                       <input
                         type="text"
                         value={agency.name}
@@ -135,7 +130,7 @@ export default function AgencyShowcase() {
                       />
                     </div>
                     <div>
-                      <label className="text-[10px] font-mono text-zinc-500 block mb-1">Unvan / Rol</label>
+                      <label className="text-xs font-mono text-zinc-500 block mb-1">Unvan / Rol</label>
                       <input
                         type="text"
                         value={agency.role}
@@ -144,7 +139,7 @@ export default function AgencyShowcase() {
                       />
                     </div>
                     <div>
-                      <label className="text-[10px] font-mono text-zinc-500 block mb-1">Odak Alanı</label>
+                      <label className="text-xs font-mono text-zinc-500 block mb-1">Odak Alanı</label>
                       <input
                         type="text"
                         value={agency.focusArea}
@@ -167,7 +162,7 @@ export default function AgencyShowcase() {
 
                 <div className="space-y-3 pt-4 border-t border-white/10">
                   <span className="text-xs font-mono uppercase tracking-wider text-zinc-500 block">
-                    Geliştirilen Ürünler ve Teslimatlar:
+                    Geliştirilen Çözümler ve Teslimatlar:
                   </span>
                   <ul className="space-y-2 text-xs text-zinc-300 leading-relaxed font-mono">
                     {agency.deliverables.map((item, dIdx) => (
@@ -181,7 +176,7 @@ export default function AgencyShowcase() {
               </div>
 
               <div className="mt-8 pt-4 border-t border-white/10 flex items-center justify-between text-xs font-mono">
-                <span className="text-zinc-500">SOMUT ÇIKTI:</span>
+                <span className="text-zinc-500">Çıktı:</span>
                 <span className="text-white font-medium">{agency.keyOutcome}</span>
               </div>
             </div>
@@ -195,13 +190,8 @@ export default function AgencyShowcase() {
               <Github className="w-5 h-5 text-white" />
               <div>
                 <h4 className="text-base font-bold text-white font-display">Açık Kaynak Sistem Mimarisi &amp; Depolar</h4>
-                <span className="text-xs font-mono text-zinc-500">Açık kodlu donanım sürücüleri ve 3D grafik kütüphaneleri</span>
+                <span className="text-xs font-mono text-zinc-500">Donanım sürücüleri ve grafik kütüphaneleri</span>
               </div>
-            </div>
-            <div className="flex items-center gap-4 text-xs font-mono text-zinc-400">
-              <span>740+ STARS TOPLAMI</span>
-              <span aria-hidden="true">·</span>
-              <span className="text-emerald-400">AKTİF REPOLAR</span>
             </div>
           </div>
 
@@ -221,7 +211,7 @@ export default function AgencyShowcase() {
                   </p>
                 </div>
 
-                <div className="flex items-center justify-between pt-3 border-t border-white/10 text-[11px] font-mono text-zinc-500">
+                <div className="flex items-center justify-between pt-3 border-t border-white/10 text-xs font-mono text-zinc-500">
                   <span>★ {repo.stars} stars</span>
                   <span>⑂ {repo.forks} forks</span>
                 </div>

@@ -5,7 +5,7 @@ import { Text } from '@react-three/drei';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Capability } from '../types/index.ts';
-import { Globe, Boxes, Cpu, Layers, Compass, ChevronDown, Sparkles } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -14,65 +14,65 @@ export const CAPABILITIES: Capability[] = [
     id: 'digital-ecosystems',
     index: '01',
     title: 'COMPLEX DIGITAL ECOSYSTEMS',
-    tagline: 'Distributed Systems & Low-Latency Event Streams',
+    tagline: 'Dağıtık Sunucu Mimarileri & Yüksek Veri Trafiği',
     technologies: ['FastAPI', 'Go', 'Firebase', 'PostgreSQL', 'Docker', 'Redis', 'WebSockets'],
     description:
-      'Gereksiz katmanlardan arindirilmis, deterministik ve yuksek eszamanli veri hatlari. Mikroservisler, coroutine kuyruklari ve sifir veri kaybi garantisi.',
+      'Gereksiz katmanlardan arındırılmış, deterministik ve yüksek eşzamanlı veri hatları. Mikroservisler, coroutine kuyrukları ve kesintisiz senkronizasyon.',
     architecturePoints: [
-      'Pydantic v2 dogrulamali FastAPI mikroservisleri',
-      'PostgreSQL baglanti havuzlama & Redis onbellegi',
-      'Anlik 50k+ canli kullanici senkronizasyonu',
+      'Pydantic v2 doğrulamalı FastAPI mikroservisleri',
+      'PostgreSQL bağlantı havuzlama & Redis önbelleği',
+      'Canlı kullanıcı senkronizasyonu',
     ],
     systemMetric: '< 14ms',
-    systemMetricLabel: 'P99 LATENCY',
+    systemMetricLabel: 'P99 Gecikme',
   },
   {
     id: 'spatial-interactive',
     index: '02',
     title: 'SPATIAL & INTERACTIVE SYSTEMS',
-    tagline: 'WebGL, Three.js & 60 FPS Deterministic Viewports',
+    tagline: 'WebGL, Three.js & 60 FPS Kararlı Arayüzler',
     technologies: ['WebGL', 'Three.js', 'React Three Fiber', 'GSAP', 'OffscreenCanvas', 'GLSL'],
     description:
-      'Ana is parcacigini bloke etmeyen mimarilerle akici mekansal deneyimler. Matematiksel kamera projeksiyonlari ve GPU hizlandirmali gorsellestirmeler.',
+      'Ana iş parçacığını bloke etmeyen mimarilerle akıcı mekânsal deneyimler. Matematiksel kamera projeksiyonları ve GPU hızlandırmalı görselleştirmeler.',
     architecturePoints: [
       'Web Worker & OffscreenCanvas izolasyonu',
-      'Optimize BufferGeometry ve instanced cizim',
-      'Ozel GLSL shaderlari ile dinamik isik fizigi',
+      'Optimize BufferGeometry ve instanced çizim',
+      'Özel GLSL shaderları ile dinamik ışık fiziği',
     ],
     systemMetric: '60 FPS',
-    systemMetricLabel: 'STABLE REFRESH',
+    systemMetricLabel: 'Ekran Akıcılığı',
   },
   {
     id: 'physical-computing',
     index: '03',
     title: 'PHYSICAL COMPUTING & IOT',
-    tagline: 'ESP32, ESP-IDF C++, Modbus-RTU & 120-Ohm Bus',
+    tagline: 'ESP32, ESP-IDF C++, Modbus-RTU & Donanım Entegrasyonu',
     technologies: ['ESP32', 'ESP-IDF C++', 'Modbus-RTU', 'RS485 Half-Duplex', 'FreeRTOS'],
     description:
-      'Yazilimi fiziksel dunyaya tasiyan endustriyel sensor hatlari, diferansiyel sinyal kablolamalari ve mikrodenetleyici duzeyinde gomulu yazilimlar.',
+      'Yazılımı fiziksel dünyaya taşıyan endüstriyel sensör hatları, diferansiyel sinyal kablolamaları ve mikrodenetleyici düzeyinde gömülü yazılımlar.',
     architecturePoints: [
-      'ESP32 FreeRTOS deterministik gorev onceligi',
-      'RS485 Modbus-RTU endustriyel gurultu korumasi',
-      'CRC16 hata dogrulama dongusu ile 0 bozuk paket',
+      'ESP32 FreeRTOS deterministik görev önceliği',
+      'RS485 Modbus-RTU endüstriyel gürültü koruması',
+      'CRC16 hata doğrulama döngüsü ile güvenli iletim',
     ],
     systemMetric: '1.2 km',
-    systemMetricLabel: 'BUS DISTANCE',
+    systemMetricLabel: 'Sinyal Mesafesi',
   },
   {
     id: 'operational-design',
     index: '04',
     title: 'HOLISTIC OPERATIONAL DESIGN',
-    tagline: 'Spatial Planning, Workflow Topologies & SOP Engines',
+    tagline: 'Mekânsal Planlama, İş Akışları & SOP Mimarisi',
     technologies: ['Spatial Planning', 'SOP Engine', 'Workflow Topology', 'System Architecture'],
     description:
-      'Fiziksel tesisler ve operasyon merkezleri icin mimari yerlesimden dijital operasyon protokollerine uzanan butuncul sistemler ve servis rotalamasi.',
+      'Fiziksel tesisler ve operasyon merkezleri için mimari yerleşimden dijital operasyon protokollerine uzanan bütüncül sistemler ve servis rotalaması.',
     architecturePoints: [
-      'Personel akis darbogazlarinin matematiksel optimizasyonu',
-      'SOP kurallarinin dijital kontrol matrisine donusturulmesi',
-      'Sifir surtunmeli fiziksel-dijital servis entegrasyonu',
+      'Personel akış darboğazlarının matematiksel optimizasyonu',
+      'SOP kurallarının dijital kontrol matrisine dönüştürülmesi',
+      'Sıfır sürtünmeli fiziksel-dijital servis entegrasyonu',
     ],
     systemMetric: '+42%',
-    systemMetricLabel: 'VELOCITY GAIN',
+    systemMetricLabel: 'Verimlilik Artışı',
   },
 ];
 
@@ -91,10 +91,10 @@ function isWebGLAvailable(): boolean {
 
 // Station Z-coordinates along the tunnel
 const STATIONS = [
-  { sweetZ: 500, color: '#38bdf8', secondary: '#0284c7' }, // Cyan
-  { sweetZ: 150, color: '#a855f7', secondary: '#7c3aed' }, // Purple
-  { sweetZ: -200, color: '#ff4500', secondary: '#c2410c' }, // Industrial Orange
-  { sweetZ: -550, color: '#00ff66', secondary: '#16a34a' }, // Signal Green
+  { sweetZ: 500, color: '#38bdf8' }, // Cyan
+  { sweetZ: 150, color: '#a855f7' }, // Purple
+  { sweetZ: -200, color: '#ff4500' }, // Industrial Orange
+  { sweetZ: -550, color: '#00ff66' }, // Signal Green
 ];
 
 interface StationProps {
@@ -107,15 +107,10 @@ interface StationProps {
 
 /**
  * Anamorphic 3D Station Component using @react-three/drei <Text>
- * Elements are dispersed in 3D (X, Y, Z) and rotate freely until the camera
- * reaches the station's Sweet Spot coordinate (Z = sweetZ).
- * At the Sweet Spot, the optical perspective projection formula aligns them into
- * a perfectly sharp, readable 2D layout.
  */
 function AnamorphicStation({ data, sweetZ, color, cameraZRef, stationIndex }: StationProps) {
   const groupRef = useRef<THREE.Group | null>(null);
 
-  // References for each 3D text chunk to apply per-frame anamorphic convergence
   const indexRef = useRef<THREE.Group | null>(null);
   const titleRef = useRef<THREE.Group | null>(null);
   const taglineRef = useRef<THREE.Group | null>(null);
@@ -124,8 +119,6 @@ function AnamorphicStation({ data, sweetZ, color, cameraZRef, stationIndex }: St
   const metricRef = useRef<THREE.Group | null>(null);
   const wireframeRef = useRef<THREE.LineSegments | null>(null);
 
-  // Target 2D Normalized Layout coordinates at reference depth (D_ref = 22)
-  // [x2D, y2D, targetScale]
   const layout = {
     index: { x: -7.5, y: 4.8, zOffset: 12, size: 0.55 },
     title: { x: -7.5, y: 2.8, zOffset: 22, size: 0.95 },
@@ -135,7 +128,6 @@ function AnamorphicStation({ data, sweetZ, color, cameraZRef, stationIndex }: St
     metric: { x: 5.5, y: 0.0, zOffset: 26, size: 0.5 },
   };
 
-  // Chaos seed for this station when away from sweet spot
   const chaos = useMemo(() => {
     const sign = stationIndex % 2 === 0 ? 1 : -1;
     return {
@@ -152,14 +144,11 @@ function AnamorphicStation({ data, sweetZ, color, cameraZRef, stationIndex }: St
     const camZ = cameraZRef.current;
     const dist = camZ - sweetZ;
 
-    // Fade in as camera approaches, fade out as camera flies through
     const absDist = Math.abs(dist);
     let masterAlpha = 0;
     if (dist > 0) {
-      // Approaching from in front
       masterAlpha = THREE.MathUtils.clamp(1 - (dist - 40) / 240, 0, 1);
     } else {
-      // Camera has passed the sweet spot and is flying through/behind
       masterAlpha = THREE.MathUtils.clamp(1 - (-dist) / 160, 0, 1);
     }
 
@@ -167,25 +156,20 @@ function AnamorphicStation({ data, sweetZ, color, cameraZRef, stationIndex }: St
       groupRef.current.visible = masterAlpha > 0.01;
     }
 
-    // Anamorphosis convergence factor: 0 = completely assembled at sweet spot, 1 = scattered
-    // Tight sweet spot window between -20 and +30 units
     const sweetWindow = 28;
     const scatter = THREE.MathUtils.clamp((absDist - sweetWindow) / 100, 0, 1);
 
-    // Apply optical convergence to each text block
     const updateBlock = (
       ref: React.MutableRefObject<THREE.Group | null>,
       coords: { x: number; y: number; zOffset: number; size: number },
       ch: { dx: number; dy: number; rotY: number; rotZ: number }
     ) => {
       if (!ref.current) return;
-      // Anamorphic perspective ratio: elements deeper in Z scale up to match optical angle
       const depthRatio = coords.zOffset / 22;
       const targetX = coords.x * depthRatio;
       const targetY = coords.y * depthRatio;
       const targetZ = -coords.zOffset;
 
-      // Disperse when away from sweet spot
       ref.current.position.x = targetX + ch.dx * scatter;
       ref.current.position.y = targetY + ch.dy * scatter;
       ref.current.position.z = targetZ + (ch.dx * 0.3) * scatter;
@@ -202,7 +186,6 @@ function AnamorphicStation({ data, sweetZ, color, cameraZRef, stationIndex }: St
     updateBlock(techRef, layout.tech, chaos.tech);
     updateBlock(metricRef, layout.metric, chaos.metric);
 
-    // Subtle breathing rotation on wireframe monolith frame
     if (wireframeRef.current) {
       wireframeRef.current.rotation.z += 0.003;
       wireframeRef.current.position.x = 5.5 + chaos.metric.dx * 0.3 * scatter;
@@ -213,20 +196,20 @@ function AnamorphicStation({ data, sweetZ, color, cameraZRef, stationIndex }: St
 
   return (
     <group ref={groupRef} position={[0, 0, sweetZ]}>
-      {/* 1. Station Index & Category */}
+      {/* 1. Station Index */}
       <group ref={indexRef}>
         <Text
           fontSize={layout.index.size}
           color={color}
           anchorX="left"
           anchorY="middle"
-          letterSpacing={0.15}
+          letterSpacing={0.12}
         >
-          {`// DISCIPLINE ${data.index} · STATION 0${stationIndex + 1}`}
+          {`DİSİPLİN ${data.index}`}
         </Text>
       </group>
 
-      {/* 2. Massive Discipline Title */}
+      {/* 2. Main Title */}
       <group ref={titleRef}>
         <Text
           fontSize={layout.title.size}
@@ -241,7 +224,7 @@ function AnamorphicStation({ data, sweetZ, color, cameraZRef, stationIndex }: St
         </Text>
       </group>
 
-      {/* 3. Architectural Tagline */}
+      {/* 3. Tagline */}
       <group ref={taglineRef}>
         <Text
           fontSize={layout.tagline.size}
@@ -249,9 +232,9 @@ function AnamorphicStation({ data, sweetZ, color, cameraZRef, stationIndex }: St
           anchorX="left"
           anchorY="middle"
           maxWidth={16}
-          letterSpacing={0.08}
+          letterSpacing={0.06}
         >
-          {`▶ ${data.tagline}`}
+          {data.tagline}
         </Text>
       </group>
 
@@ -270,7 +253,7 @@ function AnamorphicStation({ data, sweetZ, color, cameraZRef, stationIndex }: St
         </Text>
       </group>
 
-      {/* 5. Tech Stack & Protocols */}
+      {/* 5. Technologies */}
       <group ref={techRef}>
         <Text
           fontSize={layout.tech.size}
@@ -278,13 +261,13 @@ function AnamorphicStation({ data, sweetZ, color, cameraZRef, stationIndex }: St
           anchorX="left"
           anchorY="middle"
           maxWidth={15}
-          letterSpacing={0.1}
+          letterSpacing={0.08}
         >
-          {`STACK: ${data.technologies.join('  /  ')}`}
+          {data.technologies.join('  /  ')}
         </Text>
       </group>
 
-      {/* 6. Metric Monolith & SLA Callout */}
+      {/* 6. Metric Monolith */}
       <group ref={metricRef}>
         <Text
           fontSize={layout.metric.size * 1.8}
@@ -301,40 +284,30 @@ function AnamorphicStation({ data, sweetZ, color, cameraZRef, stationIndex }: St
           color={color}
           anchorX="center"
           anchorY="middle"
-          letterSpacing={0.2}
+          letterSpacing={0.15}
         >
           {data.systemMetricLabel}
         </Text>
-        <Text
-          position={[0, -2.0, 0]}
-          fontSize={layout.metric.size * 0.35}
-          color="#64748b"
-          anchorX="center"
-          anchorY="middle"
-          letterSpacing={0.15}
-        >
-          DETERMINISTIC SLA // HARDWARE SYNC
-        </Text>
       </group>
 
-      {/* 7. Monolith Wireframe Box framing the metric */}
+      {/* 7. Monolith Wireframe Box */}
       <lineSegments ref={wireframeRef}>
-        <edgesGeometry args={[new THREE.BoxGeometry(6.5, 8.5, 2.5)]} />
-        <lineBasicMaterial color={color} transparent opacity={0.35} />
+        <edgesGeometry args={[new THREE.BoxGeometry(6.5, 7.5, 2.5)]} />
+        <lineBasicMaterial color={color} transparent opacity={0.3} />
       </lineSegments>
     </group>
   );
 }
 
 /**
- * Dynamic Particle Starfield & Light Trajectories in 3D Space
+ * Dynamic Particle Starfield
  */
 function ParticleStarfield({ cameraZRef }: { cameraZRef: React.MutableRefObject<number> }) {
   const pointsRef = useRef<THREE.Points | null>(null);
   const trajectoriesRef = useRef<THREE.Group | null>(null);
 
   const particleData = useMemo(() => {
-    const count = 3200;
+    const count = 3000;
     const pos = new Float32Array(count * 3);
     const cols = new Float32Array(count * 3);
 
@@ -438,13 +411,11 @@ function ParticleStarfield({ cameraZRef }: { cameraZRef: React.MutableRefObject<
 }
 
 /**
- * Camera Flight Controller inside R3F Canvas
- * Synchronizes R3F camera with GSAP ScrollTrigger
+ * Camera Controller
  */
 function CameraController({ cameraZRef }: { cameraZRef: React.MutableRefObject<number> }) {
   useFrame(({ camera }) => {
     camera.position.z = cameraZRef.current;
-    // Subtle procedural sway
     const time = Date.now() * 0.001;
     camera.position.x = Math.sin(time * 0.8) * 0.3;
     camera.position.y = Math.cos(time * 0.6) * 0.2;
@@ -454,9 +425,7 @@ function CameraController({ cameraZRef }: { cameraZRef: React.MutableRefObject<n
 }
 
 /**
- * 2D Canvas Perspective Engine (Robust Fallback)
- * Renders the exact same Anamorphic text convergence mathematics and starfield
- * even when WebGL is disabled or sandboxed.
+ * 2D Canvas Fallback
  */
 function Fallback2DCanvas({
   cameraZ,
@@ -475,7 +444,6 @@ function Fallback2DCanvas({
 
     let animId: number;
 
-    // Generate 1200 2D particles
     const particles = Array.from({ length: 900 }, () => {
       const angle = Math.random() * Math.PI * 2;
       const radius = 40 + Math.random() * 220;
@@ -499,7 +467,6 @@ function Fallback2DCanvas({
       ctx.fillStyle = '#0a0a0a';
       ctx.fillRect(0, 0, w, h);
 
-      // Draw 3D particle starfield
       for (let i = 0; i < particles.length; i++) {
         const p = particles[i];
         const relZ = cameraZ - p.z;
@@ -519,13 +486,11 @@ function Fallback2DCanvas({
         ctx.fill();
       }
 
-      // Draw Anamorphic Stations in 2D Space
       STATIONS.forEach((st, sIdx) => {
         const cap = CAPABILITIES[sIdx];
         const dist = cameraZ - st.sweetZ;
         const absDist = Math.abs(dist);
 
-        // Alpha based on distance
         let alpha = 0;
         if (dist > 0) {
           alpha = THREE.MathUtils.clamp(1 - (dist - 40) / 240, 0, 1);
@@ -537,10 +502,9 @@ function Fallback2DCanvas({
         const scatter = THREE.MathUtils.clamp((absDist - 28) / 100, 0, 1);
         const sign = sIdx % 2 === 0 ? 1 : -1;
 
-        // Render each anamorphic block
         const blocks = [
           {
-            text: `// DISCIPLINE ${cap.index} · STATION 0${sIdx + 1}`,
+            text: `DİSİPLİN ${cap.index}`,
             x: -280 + 120 * scatter * sign,
             y: -120 + 60 * scatter,
             font: 'bold 13px monospace',
@@ -554,7 +518,7 @@ function Fallback2DCanvas({
             color: '#ffffff',
           },
           {
-            text: `▶ ${cap.tagline}`,
+            text: cap.tagline,
             x: -280 + 140 * scatter * sign,
             y: -40 - 100 * scatter,
             font: 'bold 14px monospace',
@@ -566,10 +530,9 @@ function Fallback2DCanvas({
             y: 0 + 90 * scatter,
             font: '13px monospace',
             color: '#cbd5e1',
-            wrap: 520,
           },
           {
-            text: `STACK: ${cap.technologies.join('  /  ')}`,
+            text: cap.technologies.join('  /  '),
             x: -280 + 150 * scatter * sign,
             y: 90 - 120 * scatter,
             font: '11px monospace',
@@ -584,21 +547,12 @@ function Fallback2DCanvas({
           },
         ];
 
-        // Draw station elements
         blocks.forEach((b) => {
           ctx.font = b.font;
           ctx.fillStyle = b.color;
           ctx.globalAlpha = alpha;
-          const px = cx + b.x;
-          const py = cy + b.y;
-          ctx.fillText(b.text, px, py);
+          ctx.fillText(b.text, cx + b.x, cy + b.y);
         });
-
-        // Frame
-        ctx.strokeStyle = st.color;
-        ctx.lineWidth = 1;
-        ctx.globalAlpha = alpha * 0.4;
-        ctx.strokeRect(cx + 140 - 80 * scatter, cy - 80 + 60 * scatter, 180, 120);
       });
 
       ctx.globalAlpha = 1.0;
@@ -614,31 +568,23 @@ function Fallback2DCanvas({
 
 /**
  * Main SpatialTunnel Component
- * FAZ 2: Anamorphic Z-Axis Uzay Portali
  */
 export default function SpatialTunnel() {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const cameraZRef = useRef<number>(720);
 
   const [activeStage, setActiveStage] = useState<number>(0);
-  const [scrollProgress, setScrollProgress] = useState<number>(0);
   const [cameraZDisplay, setCameraZDisplay] = useState<number>(720);
-  const [alignmentLock, setAlignmentLock] = useState<number>(0);
   const [hasWebGL, setHasWebGL] = useState<boolean>(true);
 
-  // Check WebGL context safety on initial mount
   useEffect(() => {
     setHasWebGL(isWebGLAvailable());
   }, []);
 
-  // GSAP ScrollTrigger to pin the section and drive camera Z coordinates
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
 
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    // Scroll depth span from Z = 720 to Z = -720
     const trigger = ScrollTrigger.create({
       trigger: container,
       start: 'top top',
@@ -648,14 +594,10 @@ export default function SpatialTunnel() {
       anticipatePin: 1,
       onUpdate: (self) => {
         const prog = self.progress;
-        setScrollProgress(prog);
-
-        // Smooth camera flight from 720 to -720
         const z = THREE.MathUtils.lerp(720, -720, prog);
         cameraZRef.current = z;
         setCameraZDisplay(Math.round(z));
 
-        // Determine which station is closest
         let closestIdx = 0;
         let minDist = 999999;
         STATIONS.forEach((st, idx) => {
@@ -667,10 +609,6 @@ export default function SpatialTunnel() {
         });
 
         setActiveStage(closestIdx);
-
-        // Calculate optical convergence lock percentage (100% when at sweet spot)
-        const lock = Math.max(0, Math.min(100, Math.round((1 - Math.min(minDist, 100) / 100) * 100)));
-        setAlignmentLock(lock);
       },
     });
 
@@ -683,7 +621,6 @@ export default function SpatialTunnel() {
     setActiveStage(idx);
     if (!containerRef.current) return;
     const containerTop = containerRef.current.offsetTop;
-    // Map station sweetZ back to scroll progress
     const stZ = STATIONS[idx].sweetZ;
     const progressTarget = (720 - stZ) / (720 - (-720));
     const targetScroll = containerTop + progressTarget * 3800;
@@ -698,13 +635,13 @@ export default function SpatialTunnel() {
       ref={containerRef}
       className="relative w-full h-screen bg-[#070709] border-b border-white/10 overflow-hidden select-none"
     >
-      {/* 3D R3F Canvas / 2D Engine Space */}
+      {/* 3D R3F Canvas / 2D Space */}
       <div className="absolute inset-0 z-0">
         {hasWebGL ? (
           <Canvas
             camera={{ position: [0, 0, 720], fov: 50, near: 0.1, far: 2000 }}
             gl={{ antialias: true, alpha: false, powerPreference: 'high-performance' }}
-            onCreated={({ scene, gl }) => {
+            onCreated={({ scene }) => {
               scene.background = new THREE.Color('#070709');
               scene.fog = new THREE.FogExp2('#070709', 0.0016);
             }}
@@ -712,13 +649,9 @@ export default function SpatialTunnel() {
             <ambientLight intensity={1.2} />
             <pointLight position={[20, 20, 400]} intensity={1.5} color={activeColor} />
             
-            {/* GSAP Driven Camera Synchronizer */}
             <CameraController cameraZRef={cameraZRef} />
-
-            {/* Particle Starfield & Spiral Trajectories */}
             <ParticleStarfield cameraZRef={cameraZRef} />
 
-            {/* 4 Anamorphic 3D Typography Stations */}
             {CAPABILITIES.map((cap, idx) => (
               <AnamorphicStation
                 key={cap.id}
@@ -735,50 +668,27 @@ export default function SpatialTunnel() {
         )}
       </div>
 
-      {/* Top Telemetry & Spatial Navigation HUD */}
+      {/* Clean Top Navigation Bar */}
       <div className="relative z-20 w-full bg-[#070709]/80 backdrop-blur-md border-b border-white/10 px-6 py-4 flex flex-wrap items-center justify-between gap-4 text-xs font-mono">
         <div className="flex items-center gap-3">
           <span
-            className="w-2.5 h-2.5 shadow-[0_0_10px_currentColor] transition-colors duration-300"
-            style={{ backgroundColor: activeColor, color: activeColor }}
+            className="w-2.5 h-2.5 transition-colors duration-300"
+            style={{ backgroundColor: activeColor }}
           />
           <span className="text-white font-bold tracking-widest uppercase">
-            ANAMORPHIC Z-AXIS PORTAL
+            Mühendislik Disiplinleri
           </span>
-          <span className="text-zinc-600">·</span>
-          <span className="text-zinc-300 tabular-nums">
-            DEPTH: {cameraZDisplay}m // PROGRESS: {Math.round(scrollProgress * 100)}%
-          </span>
-          <span className="text-zinc-600 hidden md:inline">·</span>
-          <div className="flex items-center gap-2 hidden md:flex">
-            <span className="text-zinc-500 uppercase text-[10px]">ANAMORPHOSIS LOCK:</span>
-            <div className="w-20 h-2 bg-white/10 border border-white/20 overflow-hidden">
-              <div
-                className="h-full transition-all duration-150"
-                style={{
-                  width: `${alignmentLock}%`,
-                  backgroundColor: activeColor,
-                }}
-              />
-            </div>
-            <span
-              className="font-bold tabular-nums text-[10px]"
-              style={{ color: alignmentLock > 75 ? activeColor : '#94a3b8' }}
-            >
-              {alignmentLock}% {alignmentLock >= 85 ? '[SWEET SPOT]' : '[DISPERSED]'}
-            </span>
-          </div>
         </div>
 
-        {/* Warp Jump Buttons across the 4 Stations */}
+        {/* Clean Station Switcher Buttons */}
         <div className="flex items-center gap-2">
           {CAPABILITIES.map((cap, idx) => (
             <button
               key={cap.id}
               onClick={() => jumpToStage(idx)}
-              className={`px-3 py-1 border text-xs font-mono cursor-pointer flex items-center gap-1.5 transition-all duration-200 ${
+              className={`px-3 py-1.5 border text-xs font-mono cursor-pointer flex items-center gap-1.5 transition-all duration-200 ${
                 activeStage === idx
-                  ? 'text-black font-bold shadow-[0_0_15px_rgba(255,255,255,0.2)]'
+                  ? 'text-black font-bold shadow-[0_0_15px_rgba(255,255,255,0.15)]'
                   : 'border-white/10 text-zinc-400 hover:text-white hover:border-white/30 bg-black/40'
               }`}
               style={{
@@ -786,23 +696,18 @@ export default function SpatialTunnel() {
                 backgroundColor: activeStage === idx ? STATIONS[idx].color : undefined,
               }}
             >
-              <span>{cap.index}</span>
-              <span className="hidden sm:inline">{cap.title.split(' ')[0]}</span>
+              <span>{cap.index}.</span>
+              <span>{cap.title.split(' ')[0]}</span>
             </button>
           ))}
         </div>
       </div>
 
-      {/* Bottom Spatial Flight Cue & Optical Alignment Status */}
-      <div className="absolute bottom-6 left-6 right-6 z-20 flex items-center justify-between pointer-events-none text-xs font-mono">
-        <div className="flex items-center gap-3 text-zinc-400 bg-black/70 px-4 py-2 border border-white/10 backdrop-blur-sm">
+      {/* Subtle Bottom Scroll Cue */}
+      <div className="absolute bottom-6 left-6 z-20 pointer-events-none text-xs font-mono">
+        <div className="flex items-center gap-2.5 text-zinc-400 bg-black/60 px-4 py-2 border border-white/10 backdrop-blur-sm">
           <ChevronDown className="w-4 h-4 text-emerald-400 animate-bounce" />
-          <span>SCROLL TO FLY THROUGH Z-AXIS // APPROACH SWEET SPOTS FOR OPTICAL 2D CONVERGENCE</span>
-        </div>
-
-        <div className="hidden sm:flex items-center gap-2 text-zinc-500 bg-black/70 px-3 py-2 border border-white/10 text-[10px]">
-          <Sparkles className="w-3.5 h-3.5 text-sky-400" />
-          <span>ANAMORPHIC THREE.JS ENGINE // DREI 3D TEXT MATRIX</span>
+          <span>Aşağı kaydırarak disiplinler arasında gezinin</span>
         </div>
       </div>
     </section>

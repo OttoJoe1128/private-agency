@@ -460,13 +460,13 @@ export default function CaseStudies() {
       {/* Top Architectural Navigation & Telemetry Bar */}
       <div className="z-30 w-full bg-[#0D0D0D]/95 backdrop-blur border-b border-white/10 px-6 sm:px-8 py-4 flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-zinc-500">
-            <span className="w-2 h-2 bg-[#FF4500] shadow-[0_0_8px_#FF4500]" />
-            <span className="text-white font-bold">FAZ 3: SELECTED WORKS // HORIZONTAL PINNING RAYI</span>
+          <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-zinc-400">
+            <span className="w-2 h-2 bg-[#FF4500]" />
+            <span className="text-white font-bold">Seçili Projeler</span>
           </div>
-          <span className="text-xs font-mono text-zinc-700 hidden sm:inline">/</span>
-          <div className="text-xs font-mono text-[#FF4500] font-bold tabular-nums">
-            0{activeProjectIndex + 1} // 0{CASE_STUDIES.length}
+          <span className="text-xs font-mono text-zinc-700 hidden sm:inline">·</span>
+          <div className="text-xs font-mono text-zinc-400 tabular-nums">
+            {activeProjectIndex + 1} / {CASE_STUDIES.length}
           </div>
         </div>
 
