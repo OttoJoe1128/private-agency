@@ -11,10 +11,12 @@ Tüm 5 faz eksiksiz olarak inşa edildi, doğrulandı ve derlendi:
    - Gemini API entegrasyonu, rasyonel sistem mimarı karakteri ve doğal dille sayfa navigasyonu yönetimi.
    - Terminal hata logları analiz desteği.
 
-2. **FAZ 2: 3D Z-Axis Uzay Portalı (Disiplinler Bölümü - `SpatialTunnel.tsx`):**
-   - GSAP ScrollTrigger kilitlemeli (pin: true) Z-ekseni uçuş portalı.
-   - 3D organik veri bulutları, süzülen neon ışık hatları ve 4 adet mimari monolit.
-   - GPU kısıtlı / sandboxed ortamlarda çökmeyen, anında devreye giren 2D Spatial Canvas Derinlik Projeksiyon Fallback motoru.
+2. **FAZ 2: Anamorfik Z-Axis Uzay Portalı (Disiplinler Bölümü - `SpatialTunnel.tsx`):**
+   - DOM (HTML) overlay kartları tamamen kaldırılarak tüm içerik Three.js / React Three Fiber Canvas ve `@react-three/drei` `<Text>` bileşenleriyle 3D uzay boşluğuna taşındı.
+   - Anamorfik Perspektif (Anamorphosis) illüzyonu: 3D uzayda Z ekseninde farklı derinliklere ($z: -12, -22, -32, -42, -52$) ve dağınık X/Y koordinatlarına yerleştirilen metin parçacıkları; kamera GSAP ScrollTrigger ile ilerleyip ilgili disiplinin "Sweet Spot" noktasına geldiğinde perspektif olarak kusursuz, nizami 2D mizanpaj gibi kilitlenir (`ANAMORPHOSIS LOCK: 100% [SWEET SPOT]`).
+   - Kamera kaydırmaya devam ettikçe hizalanmış 3D metinlerin arasından/içinden geçerek arkada bırakır ve sıradaki istasyona uçar.
+   - 3200+ organik parçacık yıldız tarlası, neon spiral hatları ve mimari tel kafes (wireframe) monolitler.
+   - WebGL kısıtlı ortamlarda çökme riskini önleyen 2D Canvas Perspective Engine yedeği.
 
 3. **FAZ 3: Selected Works (Horizontal Pinning Rayı & Project Deep Dives - `CaseStudies.tsx`):**
    - GSAP ScrollTrigger yatay kaydırma (`pin: true`, `480vw` ray, devasa `gap-[18vw]` nefes alma aralıkları).
