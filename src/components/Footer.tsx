@@ -53,10 +53,10 @@ export default function Footer({ onNavigate }: FooterProps) {
               Brief Modülü
             </button>
             <button
-              onClick={() => onNavigate('git-deploy')}
-              className="hover:text-white transition-colors cursor-pointer"
+              onClick={() => window.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', metaKey: true }))}
+              className="hover:text-white transition-colors cursor-pointer text-[#00FF66]"
             >
-              GitHub Dağıtım
+              SLISS Terminal [⌘K]
             </button>
           </nav>
         </div>

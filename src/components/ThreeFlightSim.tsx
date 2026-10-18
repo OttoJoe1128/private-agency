@@ -1,6 +1,18 @@
 import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
-import { RotateCcw, Eye, Compass, Cpu, Layers } from 'lucide-react';
+import { RotateCcw, Eye, Compass, Cpu } from 'lucide-react';
+
+function isWebGLSafe(): boolean {
+  try {
+    const test = document.createElement('canvas');
+    return Boolean(
+      window.WebGLRenderingContext &&
+      (test.getContext('webgl') || test.getContext('experimental-webgl'))
+    );
+  } catch {
+    return false;
+  }
+}
 
 export default function ThreeFlightSim() {
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -15,6 +27,18 @@ export default function ThreeFlightSim() {
   const [workerActive, setWorkerActive] = useState<boolean>(false);
   const [threadMode, setThreadMode] = useState<string>('DETECTING...');
 
+  // State refs for main-thread render loop synchronization
+  const flightStateRef = useRef({
+    pitch: 0,
+    roll: 0,
+    altitude: 140,
+    wireframe: true,
+  });
+
+  useEffect(() => {
+    flightStateRef.current = { pitch, roll, altitude, wireframe };
+  }, [pitch, roll, altitude, wireframe]);
+
   useEffect(() => {
     const container = containerRef.current;
     const canvas = canvasRef.current;
@@ -27,12 +51,13 @@ export default function ThreeFlightSim() {
     canvas.height = height;
 
     const supportsOffscreen = 'transferControlToOffscreen' in canvas;
+    let workerStarted = false;
 
     if (supportsOffscreen) {
       try {
         const offscreen = canvas.transferControlToOffscreen();
 
-        // Worker Script utilizing pure 3D wireframe matrix projection or Canvas2D/WebGL on the Worker thread
+        // Worker Script utilizing pure 3D wireframe matrix projection on Worker thread
         const workerCode = `
           let ctx = null;
           let offscreenCanvas = null;
@@ -168,6 +193,7 @@ export default function ThreeFlightSim() {
 
         setWorkerActive(true);
         setThreadMode('OFFSCREEN_WORKER [0ms JANK / ISOLATED THREAD]');
+        workerStarted = true;
 
         const handleResize = () => {
           if (!container) return;
@@ -183,56 +209,167 @@ export default function ThreeFlightSim() {
           URL.revokeObjectURL(workerUrl);
         };
       } catch (err) {
-        console.warn('OffscreenCanvas fallback activated:', err);
+        console.warn('OffscreenCanvas worker fallback activated:', err);
       }
     }
 
-    // Fallback: Direct WebGL Three.js on main thread if browser restricts offscreen transfer
-    setThreadMode('WEBGL_MAIN_THREAD [SYNCHRONOUS]');
-    const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x060709);
+    if (workerStarted) return;
 
-    const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
-    camera.position.set(0, 3, 7);
-    camera.lookAt(0, 0, 0);
+    // Fallback: Check if WebGL is safely available without throwing
+    let mainAnimId: number;
+    const canUseWebGL = isWebGLSafe();
 
-    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
-    renderer.setSize(width, height);
+    if (canUseWebGL) {
+      try {
+        setThreadMode('WEBGL_MAIN_THREAD [SYNCHRONOUS]');
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x060709);
 
-    const gridHelper = new THREE.GridHelper(20, 20, 0x38bdf8, 0x1f2937);
-    gridHelper.position.y = -1.5;
-    scene.add(gridHelper);
+        const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
+        camera.position.set(0, 3, 7);
+        camera.lookAt(0, 0, 0);
 
-    const droneGroup = new THREE.Group();
-    const bodyMesh = new THREE.Mesh(
-      new THREE.BoxGeometry(1.6, 0.3, 0.8),
-      new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: true })
-    );
-    droneGroup.add(bodyMesh);
-    scene.add(droneGroup);
+        const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+        renderer.setSize(width, height);
 
-    let animId: number;
+        const gridHelper = new THREE.GridHelper(20, 20, 0x38bdf8, 0x1f2937);
+        gridHelper.position.y = -1.5;
+        scene.add(gridHelper);
+
+        const droneGroup = new THREE.Group();
+        const bodyMesh = new THREE.Mesh(
+          new THREE.BoxGeometry(1.6, 0.3, 0.8),
+          new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: true })
+        );
+        droneGroup.add(bodyMesh);
+        scene.add(droneGroup);
+
+        let frames = 0;
+        let timer = performance.now();
+
+        const animate = (time: number) => {
+          frames++;
+          if (time - timer >= 1000) {
+            setFps(frames);
+            frames = 0;
+            timer = time;
+          }
+          droneGroup.rotation.x = (flightStateRef.current.pitch * Math.PI) / 180;
+          droneGroup.rotation.z = (flightStateRef.current.roll * Math.PI) / 180;
+          renderer.render(scene, camera);
+          mainAnimId = requestAnimationFrame(animate);
+        };
+
+        mainAnimId = requestAnimationFrame(animate);
+
+        return () => {
+          cancelAnimationFrame(mainAnimId);
+          renderer.dispose();
+        };
+      } catch (e) {
+        console.warn('WebGL initialization failed, falling back to 2D canvas:', e);
+      }
+    }
+
+    // Direct 2D Canvas Fallback (Resilient for headless/sandboxed preview)
+    setThreadMode('CANVAS_2D_MAIN_THREAD [RESILIENT FALLBACK]');
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
     let frames = 0;
     let timer = performance.now();
 
-    const animate = (time: number) => {
+    const render2D = (time: number) => {
       frames++;
       if (time - timer >= 1000) {
         setFps(frames);
         frames = 0;
         timer = time;
       }
-      droneGroup.rotation.x = (pitch * Math.PI) / 180;
-      droneGroup.rotation.z = (roll * Math.PI) / 180;
-      renderer.render(scene, camera);
-      animId = requestAnimationFrame(animate);
+
+      const w = canvas.width;
+      const h = canvas.height;
+      const cx = w * 0.5;
+      const cy = h * 0.65;
+      const curRoll = flightStateRef.current.roll;
+      const curAlt = flightStateRef.current.altitude;
+      const curWire = flightStateRef.current.wireframe;
+
+      ctx.fillStyle = '#060709';
+      ctx.fillRect(0, 0, w, h);
+
+      // Perspective Grid Lines
+      ctx.strokeStyle = 'rgba(56, 189, 248, 0.18)';
+      ctx.lineWidth = 1;
+      const groundOffset = (time * 0.05) % 25;
+      for (let i = 0; i < 12; i++) {
+        const y = cy + (i * i * 0.9) + groundOffset;
+        if (y > h) continue;
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(w, y);
+        ctx.stroke();
+      }
+
+      for (let i = -7; i <= 7; i++) {
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.lineTo(cx + i * 75 + curRoll * 2, h);
+        ctx.stroke();
+      }
+
+      // Drone Body
+      ctx.save();
+      ctx.translate(cx, cy - 50 - (curAlt - 140) * 0.2);
+      ctx.rotate((curRoll * Math.PI) / 180);
+
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 1.5;
+      if (!curWire) {
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.08)';
+        ctx.fillRect(-45, -12, 90, 24);
+      }
+      ctx.strokeRect(-45, -12, 90, 24);
+
+      // Arms
+      ctx.strokeStyle = 'rgba(148, 163, 184, 0.8)';
+      ctx.beginPath();
+      ctx.moveTo(-55, -35);
+      ctx.lineTo(55, 35);
+      ctx.moveTo(55, -35);
+      ctx.lineTo(-55, 35);
+      ctx.stroke();
+
+      // Spinning Rotors
+      const spin = time * 0.02;
+      const rotors = [
+        [-55, -35], [55, -35], [-55, 35], [55, 35]
+      ];
+      ctx.strokeStyle = '#38bdf8';
+      ctx.lineWidth = 1.2;
+      rotors.forEach(([rx, ry], idx) => {
+        ctx.beginPath();
+        ctx.ellipse(rx, ry, 18, 5, spin * (idx % 2 === 0 ? 1 : -1), 0, Math.PI * 2);
+        ctx.stroke();
+      });
+
+      // Crosshair
+      ctx.strokeStyle = 'rgba(245, 158, 11, 0.7)';
+      ctx.beginPath();
+      ctx.arc(0, 0, 10, 0, Math.PI * 2);
+      ctx.moveTo(-15, 0); ctx.lineTo(15, 0);
+      ctx.moveTo(0, -15); ctx.lineTo(0, 15);
+      ctx.stroke();
+
+      ctx.restore();
+
+      mainAnimId = requestAnimationFrame(render2D);
     };
 
-    animId = requestAnimationFrame(animate);
+    mainAnimId = requestAnimationFrame(render2D);
 
     return () => {
-      cancelAnimationFrame(animId);
-      renderer.dispose();
+      cancelAnimationFrame(mainAnimId);
     };
   }, []);
 

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { sound } from '../utils/soundEngine.ts';
 
 export default function CustomCursor() {
   const [enabled, setEnabled] = useState<boolean>(false);
@@ -46,10 +47,15 @@ export default function CustomCursor() {
       }
     };
 
+    const onMouseDown = () => {
+      sound.playClick();
+    };
+
     const onMouseLeave = () => setIsVisible(false);
     const onMouseEnter = () => setIsVisible(true);
 
     window.addEventListener('mousemove', onMouseMove);
+    window.addEventListener('mousedown', onMouseDown);
     document.addEventListener('mouseleave', onMouseLeave);
     document.addEventListener('mouseenter', onMouseEnter);
 
@@ -71,6 +77,7 @@ export default function CustomCursor() {
 
     return () => {
       window.removeEventListener('mousemove', onMouseMove);
+      window.removeEventListener('mousedown', onMouseDown);
       document.removeEventListener('mouseleave', onMouseLeave);
       document.removeEventListener('mouseenter', onMouseEnter);
       cancelAnimationFrame(animId);

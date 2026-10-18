@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import LivingTopologyCanvas from './LivingTopologyCanvas.tsx';
-import { ArrowDownRight, Compass, Terminal, ShieldCheck, Crosshair } from 'lucide-react';
+import { sound } from '../utils/soundEngine.ts';
+import { ArrowDownRight, Compass, Terminal, Crosshair, Sparkles } from 'lucide-react';
 
 interface HeroProps {
   onNavigate: (sectionId: string) => void;
@@ -8,6 +9,18 @@ interface HeroProps {
 
 export default function Hero({ onNavigate }: HeroProps) {
   const [hoveredCta, setHoveredCta] = useState<string | null>(null);
+  const [mounted, setMounted] = useState<boolean>(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const handleCtaClick = (sectionId: string, actionName: string) => {
+    sound.playWarp();
+    onNavigate(sectionId);
+  };
+
+  const titleWords = ['Engineering', 'Living', 'Systems.'];
 
   return (
     <section id="hero" className="relative pt-12 pb-24 md:pt-20 md:pb-36 border-b border-white/10 architectural-grid overflow-hidden bg-[#0D0D0D]">
@@ -53,46 +66,71 @@ export default function Hero({ onNavigate }: HeroProps) {
         {/* Hero Main Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
           
-          {/* Left Column: Massive Editorial Typography & Negative Space */}
+          {/* Left Column: Massive Editorial Typography with Split-Type Stagger */}
           <div className="lg:col-span-7 flex flex-col justify-between">
             <div>
               {/* Kicker */}
-              <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-zinc-400 mb-6">
-                <span>Architecture</span>
+              <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-zinc-400 mb-6 overflow-hidden">
+                <span className="inline-block transition-transform duration-700 delay-100 transform translate-y-0">
+                  Architecture
+                </span>
                 <span aria-hidden="true" className="text-zinc-600">/</span>
-                <span>Spatial Systems</span>
+                <span className="inline-block transition-transform duration-700 delay-200 transform translate-y-0">
+                  Spatial Systems
+                </span>
                 <span aria-hidden="true" className="text-zinc-600">/</span>
-                <span>Physical Computing</span>
+                <span className="inline-block transition-transform duration-700 delay-300 transform translate-y-0">
+                  Physical Computing
+                </span>
               </div>
 
-              {/* Massive H1 Title */}
-              <h1 className="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-black tracking-tight text-white leading-[0.98] font-display text-balance mb-16 md:mb-20">
-                Engineering Living Systems.
+              {/* Massive Split-Type Staggered H1 Title */}
+              <h1 className="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-black tracking-tight text-white leading-[0.98] font-display text-balance mb-14 md:mb-18">
+                {titleWords.map((word, wIdx) => (
+                  <span key={wIdx} className="inline-block overflow-hidden mr-3 sm:mr-5">
+                    <span
+                      className={`inline-block transition-transform duration-1000 ease-out transform ${
+                        mounted ? 'translate-y-0' : 'translate-y-full'
+                      }`}
+                      style={{ transitionDelay: `${wIdx * 180 + 100}ms` }}
+                    >
+                      {word}
+                    </span>
+                  </span>
+                ))}
               </h1>
 
-              {/* Strict Max-Width Editorial Manifesto (Generous breathing room) */}
+              {/* Strict Max-Width Editorial Manifesto */}
               <div className="max-w-xl pr-4">
                 <p className="text-base sm:text-lg text-zinc-300 font-normal leading-relaxed mb-10">
                   Hazır şablonlar üretmeyip, dijital arayüzlerden (Next.js, Canvas) fiziksel sensör ağlarına (ESP32) kadar amaca yönelik ekosistemler kuruyoruz. Sistemin her katmanı – donanım düzeyindeki Modbus register iletişiminden 60 FPS spatial arayüzlere – canlı ve rasyonel bir bütün olarak nefes alır.
                 </p>
 
-                {/* CTAs with Blunt Grids */}
+                {/* CTAs with Blunt Grids and Cyber-tactile Sound */}
                 <div className="pt-8 border-t border-white/10 flex flex-wrap items-center gap-4 mb-4">
                   <button
-                    onClick={() => onNavigate('case-studies')}
-                    onMouseEnter={() => setHoveredCta('works')}
+                    onClick={() => handleCtaClick('case-studies', 'works')}
+                    onMouseEnter={() => {
+                      setHoveredCta('works');
+                      sound.playHover();
+                    }}
                     onMouseLeave={() => setHoveredCta(null)}
-                    className="px-8 py-4 bg-white text-black font-mono font-bold text-xs tracking-wider uppercase flex items-center gap-3 hover:bg-zinc-200 transition-none border border-white cursor-pointer"
+                    className="px-8 py-4 bg-white text-black font-mono font-bold text-xs tracking-wider uppercase flex items-center gap-3 hover:bg-zinc-200 transition-none border border-white cursor-pointer active:scale-95"
+                    data-cursor="NAVIGATE"
                   >
                     <span>Sistemleri İncele</span>
                     <ArrowDownRight className="w-4 h-4 text-black" />
                   </button>
 
                   <button
-                    onClick={() => onNavigate('capabilities')}
-                    onMouseEnter={() => setHoveredCta('caps')}
+                    onClick={() => handleCtaClick('capabilities', 'caps')}
+                    onMouseEnter={() => {
+                      setHoveredCta('caps');
+                      sound.playHover();
+                    }}
                     onMouseLeave={() => setHoveredCta(null)}
-                    className="px-8 py-4 border border-white/30 text-white font-mono text-xs tracking-wider uppercase flex items-center gap-3 hover:bg-white/10 hover:border-white transition-none cursor-pointer"
+                    className="px-8 py-4 border border-white/30 text-white font-mono text-xs tracking-wider uppercase flex items-center gap-3 hover:bg-white/10 hover:border-white transition-none cursor-pointer active:scale-95"
+                    data-cursor="WARP 3D"
                   >
                     <span>Mimariyi Keşfet</span>
                     <Compass className="w-4 h-4 text-zinc-300" />
@@ -112,15 +150,15 @@ export default function Hero({ onNavigate }: HeroProps) {
             </div>
           </div>
 
-          {/* Right Column: Architectural Blueprint Canvas Mount with Plentiful Negative Space */}
+          {/* Right Column: Architectural Blueprint Canvas Mount */}
           <div className="lg:col-span-5 flex flex-col justify-start">
             <div className="relative border border-white/15 bg-[#090b0e] p-2">
               <div className="flex items-center justify-between px-3 py-2 bg-[#060709] border-b border-white/10 text-[10px] font-mono text-zinc-500 mb-2">
                 <span className="flex items-center gap-1.5 text-zinc-300">
                   <Crosshair className="w-3 h-3 text-[#FF4500]" />
-                  <span>TOPOLOGY_BLUEPRINT // OFFSCREEN</span>
+                  <span>TOPOLOGY_BLUEPRINT // 60 FPS</span>
                 </span>
-                <span>60 FPS KARARLI</span>
+                <span>INTERACTIVE NODES</span>
               </div>
               <LivingTopologyCanvas />
             </div>

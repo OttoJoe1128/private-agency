@@ -10,6 +10,11 @@ export interface Capability {
   systemMetricLabel: string;
 }
 
+export interface MetricItem {
+  label: string;
+  value: string;
+}
+
 export interface CaseStudy {
   id: string;
   category: string;
@@ -21,8 +26,15 @@ export interface CaseStudy {
   approach: string;
   systemInstalled: string;
   techStack: string[];
-  metrics: { label: string; value: string }[];
+  metrics: MetricItem[];
   accentColor: string;
+  deepDive?: {
+    summary: string;
+    keyDeliverables: string[];
+    technicalArchitecture: string[];
+    terminalLogs: string[];
+    hardwareOrProtocolSpecs?: { label: string; value: string }[];
+  };
 }
 
 export interface SystemBriefPayload {
