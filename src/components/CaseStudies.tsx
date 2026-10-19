@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { CaseStudy } from '../types/index.ts';
 import ThreeFlightSim from './ThreeFlightSim.tsx';
+import DeviceSimulator3D from './DeviceSimulator3D.tsx';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import {
@@ -279,8 +280,11 @@ export default function CaseStudies() {
 
   const containerRef = useRef<HTMLDivElement | null>(null);
   const trackRef = useRef<HTMLDivElement | null>(null);
+  const slideInnerRefs = useRef<(HTMLDivElement | null)[]>([]);
 
-  // GSAP Horizontal Pinning Setup
+  // GSAP 2-Axis Orchestration:
+  // 1. Vertical scroll reveals the complete project (header, metrics, 3D device simulator)
+  // 2. Once the bottom is reached, horizontal scrub transitions to the next project
   useEffect(() => {
     const container = containerRef.current;
     const track = trackRef.current;
@@ -293,31 +297,62 @@ export default function CaseStudies() {
     const totalPanels = CASE_STUDIES.length;
 
     const ctx = gsap.context(() => {
-      const pinTrigger = ScrollTrigger.create({
-        trigger: container,
-        start: 'top top',
-        end: () => `+=${window.innerWidth * (totalPanels - 1) * 1.3}`,
-        pin: true,
-        scrub: 1,
-        anticipatePin: 1,
-        onUpdate: (self) => {
-          const index = Math.min(
-            totalPanels - 1,
-            Math.floor(self.progress * totalPanels)
-          );
-          setActiveProjectIndex(index);
+      const masterTl = gsap.timeline();
 
-          const targetX = -self.progress * (100 * (totalPanels - 1) / totalPanels);
-          gsap.set(track, { xPercent: targetX });
-        },
+      CASE_STUDIES.forEach((_, idx) => {
+        const inner = slideInnerRefs.current[idx];
+        const viewH = (container.clientHeight || window.innerHeight) - 65;
+        const scrollH = inner ? inner.scrollHeight : viewH;
+        const maxScrollY = Math.max(0, scrollH - viewH + 40);
+
+        // Phase 1: Vertical scroll of current project to reveal the full 3D device simulator
+        if (maxScrollY > 15) {
+          masterTl.to(inner, {
+            y: -maxScrollY,
+            ease: 'none',
+            duration: 1.6,
+          });
+        } else {
+          masterTl.to({}, { duration: 0.4 });
+        }
+
+        // Phase 2: Horizontal glide to the next project
+        if (idx < totalPanels - 1) {
+          masterTl.to(track, {
+            x: () => -(idx + 1) * window.innerWidth,
+            ease: 'power2.inOut',
+            duration: 1.2,
+          });
+        }
       });
 
-      return () => {
-        pinTrigger.kill();
-      };
+      const totalScrollDuration = CASE_STUDIES.length * 2000;
+
+      ScrollTrigger.create({
+        animation: masterTl,
+        trigger: container,
+        start: 'top top',
+        end: () => `+=${totalScrollDuration}`,
+        pin: true,
+        scrub: 1.2,
+        anticipatePin: 1,
+        onUpdate: (self) => {
+          const p = self.progress;
+          const idx = Math.min(totalPanels - 1, Math.floor(p * totalPanels));
+          setActiveProjectIndex(idx);
+        },
+      });
     }, container);
 
-    return () => ctx.revert();
+    const handleResize = () => {
+      ScrollTrigger.refresh();
+    };
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      ctx.revert();
+    };
   }, []);
 
   // Keyboard navigation for projects
@@ -341,9 +376,11 @@ export default function CaseStudies() {
     setActiveProjectIndex(idx);
     if (!containerRef.current) return;
     const containerTop = containerRef.current.offsetTop;
-    const scrollDistance = window.innerWidth * idx * 1.3;
+    const totalScrollDuration = CASE_STUDIES.length * 2000;
+    const progressTarget = idx / (CASE_STUDIES.length || 1);
+    const targetScroll = containerTop + progressTarget * totalScrollDuration;
     window.scrollTo({
-      top: containerTop + scrollDistance,
+      top: targetScroll,
       behavior: 'smooth',
     });
   };
@@ -488,17 +525,24 @@ export default function CaseStudies() {
         </div>
       </div>
 
-      {/* Horizontal Sliding Track with Massive Inter-Project Breathing Gap (gap-[18vw]) */}
+      {/* Sequential 2-Axis Orchestration Track: Width is precisely 100vw * total panels */}
       <div
         ref={trackRef}
-        className="flex h-[calc(100vh-65px)] w-[480vw] gap-[18vw] will-change-transform pl-8 pr-[18vw]"
+        className="flex h-[calc(100vh-65px)] will-change-transform"
+        style={{ width: `${CASE_STUDIES.length * 100}vw` }}
       >
         {CASE_STUDIES.map((project, idx) => (
           <div
             key={project.id}
-            className="w-[95vw] lg:w-[86vw] h-full py-6 md:py-10 flex flex-col justify-between overflow-y-auto shrink-0 select-text"
+            className="w-screen h-full shrink-0 overflow-hidden relative px-4 sm:px-8 lg:px-12 flex flex-col select-text"
           >
-            <div className="w-full max-w-7xl mx-auto">
+            {/* Inner Project Content: Translated on Y by GSAP to reveal full 3D device simulator */}
+            <div
+              ref={(el) => {
+                slideInnerRefs.current[idx] = el;
+              }}
+              className="w-full max-w-7xl mx-auto py-8 sm:py-10 will-change-transform pb-24"
+            >
               
               {/* Asymmetric Magazine Layout: Bold Editorial Header */}
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-start pb-8 border-b border-white/10 mb-8">
@@ -514,7 +558,7 @@ export default function CaseStudies() {
                     </div>
 
                     <div className="text-5xl sm:text-6xl lg:text-7xl font-black font-display text-white tracking-tight leading-[0.95] mb-4">
-                      {project.kicker}
+                      {project.client}
                     </div>
 
                     <h3 className="text-xl sm:text-2xl font-bold text-zinc-300 font-display mb-6">
@@ -528,7 +572,7 @@ export default function CaseStudies() {
                       data-cursor="INSPECT"
                     >
                       <Maximize2 className="w-3.5 h-3.5 text-[#00FF66] group-hover:scale-110 transition-transform" />
-                      <span>MİMARİ İNCELEME // DEEP DIVE</span>
+                      <span>Mimari İnceleme &amp; Detaylar</span>
                       <ChevronRight className="w-3.5 h-3.5 text-zinc-400 group-hover:translate-x-1 transition-transform" />
                     </button>
                   </div>
@@ -536,7 +580,7 @@ export default function CaseStudies() {
                   {/* Tech Stack Unboxed */}
                   <div className="pt-6 border-t border-white/10 mt-6">
                     <span className="text-[10px] font-mono text-zinc-500 uppercase tracking-widest block mb-2">
-                      MİMARİ YIĞIN:
+                      Kullanılan Teknolojiler:
                     </span>
                     <div className="flex flex-wrap items-center gap-2 text-xs font-mono text-zinc-300">
                       {project.techStack.map((tech, tIdx) => (
@@ -602,297 +646,337 @@ export default function CaseStudies() {
                 ))}
               </div>
 
-              {/* Specialized Demonstrator Per Project */}
+              {/* Specialized 3D Device Demonstrator Per Project */}
 
-              {/* SLIDE 01: Nova Agro Systems - RS485 & Telemetry Simulator */}
+              {/* SLIDE 01: Nova Agro Systems - 3D MacBook Pro Simulator */}
               {project.id === 'nova-system' && (
-                <div className="border border-white/10 bg-[#060709] p-6">
-                  <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-white/10 mb-4">
-                    <div className="flex items-center gap-3">
-                      <Cpu className="w-4 h-4 text-[#FF4500]" />
-                      <span className="text-xs font-mono text-white font-bold">
-                        ESP32_IDF_V5.3 // RS485_MODBUS_TELEMETRY (120Ω LATCHED)
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <button
-                        onClick={randomizeTelemetry}
-                        className="px-3 py-1 border border-white/20 text-xs font-mono text-zinc-300 hover:text-white cursor-pointer"
-                      >
-                        Telemetri Yenile
-                      </button>
-                      <button
-                        onClick={togglePump}
-                        className={`px-3 py-1 text-xs font-mono font-semibold cursor-pointer ${
-                          novaSensorValues.pumpActive ? 'bg-emerald-500 text-black' : 'bg-white text-black'
-                        }`}
-                      >
-                        {novaSensorValues.pumpActive ? 'Sulama Pompası [AKTİF]' : 'Sulama Pompası Başlat'}
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Registers */}
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-                    <div className="bg-[#0b0e14] p-3 border border-white/10">
-                      <span className="text-[10px] font-mono text-zinc-500 block">TOPRAK NEMİ</span>
-                      <span className="text-xl font-bold font-mono text-white tabular-nums">{novaSensorValues.moisture}%</span>
-                    </div>
-                    <div className="bg-[#0b0e14] p-3 border border-white/10">
-                      <span className="text-[10px] font-mono text-zinc-500 block">SICAKLIK</span>
-                      <span className="text-xl font-bold font-mono text-white tabular-nums">{novaSensorValues.temp} °C</span>
-                    </div>
-                    <div className="bg-[#0b0e14] p-3 border border-white/10">
-                      <span className="text-[10px] font-mono text-zinc-500 block">pH DEĞERİ</span>
-                      <span className="text-xl font-bold font-mono text-white tabular-nums">{novaSensorValues.ph}</span>
-                    </div>
-                    <div className="bg-[#0b0e14] p-3 border border-white/10">
-                      <span className="text-[10px] font-mono text-zinc-500 block">EC İLETKENLİK</span>
-                      <span className="text-xl font-bold font-mono text-white tabular-nums">{novaSensorValues.ec} mS/cm</span>
-                    </div>
-                  </div>
-
-                  {/* Driver Tabs */}
-                  <div className="border border-white/10 bg-[#090b0e]">
-                    <div className="flex border-b border-white/10 text-xs font-mono">
-                      <button
-                        onClick={() => setNovaTab('driver')}
-                        className={`px-4 py-2 cursor-pointer ${novaTab === 'driver' ? 'bg-white text-black font-bold' : 'text-zinc-400 hover:text-white'}`}
-                      >
-                        driver_modbus_rs485.cpp
-                      </button>
-                      <button
-                        onClick={() => setNovaTab('crc16')}
-                        className={`px-4 py-2 cursor-pointer ${novaTab === 'crc16' ? 'bg-white text-black font-bold' : 'text-zinc-400 hover:text-white'}`}
-                      >
-                        CRC16 Doğrulayıcı
-                      </button>
-                      <button
-                        onClick={() => setNovaTab('registers')}
-                        className={`px-4 py-2 cursor-pointer ${novaTab === 'registers' ? 'bg-white text-black font-bold' : 'text-zinc-400 hover:text-white'}`}
-                      >
-                        Modbus Register Haritası
-                      </button>
+                <DeviceSimulator3D
+                  deviceType="macbook"
+                  accentColor={project.accentColor}
+                  client={project.client}
+                  title={project.title}
+                >
+                  <div className="w-full h-full p-6 bg-[#060709] text-xs font-mono">
+                    <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-white/10 mb-4">
+                      <div className="flex items-center gap-3">
+                        <Cpu className="w-4 h-4 text-[#FF4500]" />
+                        <span className="text-white font-bold">
+                          RS485 Modbus Telemetrisi &amp; ESP32 Sürücüsü
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <button
+                          onClick={randomizeTelemetry}
+                          className="px-3 py-1 border border-white/20 text-zinc-300 hover:text-white cursor-pointer bg-white/5"
+                        >
+                          Telemetri Yenile
+                        </button>
+                        <button
+                          onClick={togglePump}
+                          className={`px-3 py-1 font-semibold cursor-pointer ${
+                            novaSensorValues.pumpActive ? 'bg-emerald-500 text-black' : 'bg-white text-black'
+                          }`}
+                        >
+                          {novaSensorValues.pumpActive ? 'Sulama Pompası [AKTİF]' : 'Sulama Pompası Başlat'}
+                        </button>
+                      </div>
                     </div>
 
-                    <div className="p-4 text-xs font-mono">
-                      {novaTab === 'driver' && (
-                        <pre className="text-zinc-300 overflow-x-auto p-3 bg-[#050608] border border-white/5 leading-relaxed">
+                    {/* Registers */}
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+                      <div className="bg-[#0b0e14] p-3 border border-white/10">
+                        <span className="text-[10px] text-zinc-500 block">TOPRAK NEMİ</span>
+                        <span className="text-xl font-bold text-white tabular-nums">{novaSensorValues.moisture}%</span>
+                      </div>
+                      <div className="bg-[#0b0e14] p-3 border border-white/10">
+                        <span className="text-[10px] text-zinc-500 block">SICAKLIK</span>
+                        <span className="text-xl font-bold text-white tabular-nums">{novaSensorValues.temp} °C</span>
+                      </div>
+                      <div className="bg-[#0b0e14] p-3 border border-white/10">
+                        <span className="text-[10px] text-zinc-500 block">pH DEĞERİ</span>
+                        <span className="text-xl font-bold text-white tabular-nums">{novaSensorValues.ph}</span>
+                      </div>
+                      <div className="bg-[#0b0e14] p-3 border border-white/10">
+                        <span className="text-[10px] text-zinc-500 block">EC İLETKENLİK</span>
+                        <span className="text-xl font-bold text-white tabular-nums">{novaSensorValues.ec} mS/cm</span>
+                      </div>
+                    </div>
+
+                    {/* Driver Tabs */}
+                    <div className="border border-white/10 bg-[#090b0e]">
+                      <div className="flex border-b border-white/10 text-xs">
+                        <button
+                          onClick={() => setNovaTab('driver')}
+                          className={`px-4 py-2 cursor-pointer ${novaTab === 'driver' ? 'bg-white text-black font-bold' : 'text-zinc-400 hover:text-white'}`}
+                        >
+                          driver_modbus_rs485.cpp
+                        </button>
+                        <button
+                          onClick={() => setNovaTab('crc16')}
+                          className={`px-4 py-2 cursor-pointer ${novaTab === 'crc16' ? 'bg-white text-black font-bold' : 'text-zinc-400 hover:text-white'}`}
+                        >
+                          CRC16 Doğrulayıcı
+                        </button>
+                        <button
+                          onClick={() => setNovaTab('registers')}
+                          className={`px-4 py-2 cursor-pointer ${novaTab === 'registers' ? 'bg-white text-black font-bold' : 'text-zinc-400 hover:text-white'}`}
+                        >
+                          Modbus Register Haritası
+                        </button>
+                      </div>
+
+                      <div className="p-4 text-xs">
+                        {novaTab === 'driver' && (
+                          <pre className="text-zinc-300 overflow-x-auto p-3 bg-[#050608] border border-white/5 leading-relaxed">
 {`ESP_ERROR_CHECK(uart_set_mode(UART_NUM_2, UART_MODE_RS485_HALF_DUPLEX));
 ESP_ERROR_CHECK(uart_set_pin(UART_NUM_2, 17, 16, 4, UART_PIN_NO_CHANGE));
 // 120Ω sonlandırma dirençleri ile 1.2km diferansiyel hat iletimi
 uint8_t request_frame[] = { 0x01, 0x03, 0x00, 0x00, 0x00, 0x04, 0x44, 0x09 };
 uart_write_bytes(UART_NUM_2, (const char*)request_frame, sizeof(request_frame));`}
-                        </pre>
-                      )}
+                          </pre>
+                        )}
 
-                      {novaTab === 'crc16' && (
-                        <div className="space-y-3">
-                          <span className="text-zinc-400 block">Modbus Hex Çerçevesi girin (CRC16 son 2 bayt otomatik hesaplanır):</span>
-                          <div className="flex flex-wrap items-center gap-3">
-                            <input
-                              type="text"
-                              value={crcInputHex}
-                              onChange={(e) => setCrcInputHex(e.target.value)}
-                              className="bg-[#0b0e14] border border-white/20 px-3 py-1.5 text-xs text-white font-mono w-72"
-                            />
-                            <span className="text-emerald-400 font-bold bg-emerald-950/40 px-3 py-1.5 border border-emerald-500/30">
-                              HESAPLANAN CRC: {computeCrc16Modbus(crcInputHex)}
-                            </span>
-                          </div>
-                        </div>
-                      )}
-
-                      {novaTab === 'registers' && (
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-zinc-300">
-                          <div className="p-2.5 bg-[#050608] border border-white/10">
-                            <span className="text-zinc-500 block">REG 0x0000</span>
-                            <span className="text-white font-bold">Toprak Nemi (x10)</span>
-                          </div>
-                          <div className="p-2.5 bg-[#050608] border border-white/10">
-                            <span className="text-zinc-500 block">REG 0x0001</span>
-                            <span className="text-white font-bold">Sıcaklık (°C x10)</span>
-                          </div>
-                          <div className="p-2.5 bg-[#050608] border border-white/10">
-                            <span className="text-zinc-500 block">REG 0x0002</span>
-                            <span className="text-white font-bold">pH Değeri (x100)</span>
-                          </div>
-                          <div className="p-2.5 bg-[#050608] border border-white/10">
-                            <span className="text-zinc-500 block">REG 0x0003</span>
-                            <span className="text-white font-bold">EC İletkenlik</span>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* SLIDE 02: LensAI & SudokuMap - 9x9 Live Matrix Constraint Solver */}
-              {project.id === 'lensai-sudokumap' && (
-                <div className="border border-white/10 bg-[#090b0e] p-6">
-                  <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-white/10 mb-4">
-                    <div className="flex items-center gap-3">
-                      <Activity className="w-4 h-4 text-[#38bdf8]" />
-                      <span className="text-xs font-mono text-white font-bold">
-                        FASTAPI BIT-MASKING ENGINE // 9x9 MATRIX CONSTRAINT SOLVER
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <button
-                        onClick={resetSudokuGrid}
-                        className="px-3 py-1 border border-white/20 text-xs font-mono text-zinc-300 hover:text-white cursor-pointer"
-                      >
-                        Sıfırla
-                      </button>
-                      <button
-                        onClick={runSudokuSolver}
-                        disabled={isSolving}
-                        className="px-4 py-1 bg-[#38bdf8] text-black font-mono font-bold text-xs cursor-pointer flex items-center gap-1.5 hover:bg-[#60a5fa]"
-                      >
-                        <Play className="w-3 h-3 fill-current" />
-                        <span>{isSolving ? 'Çözülüyor...' : 'Kısıt Algoritmasını Çalıştır'}</span>
-                      </button>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
-                    
-                    {/* 9x9 Interactive Matrix Grid */}
-                    <div className="lg:col-span-6 flex justify-center">
-                      <div className="grid grid-cols-9 gap-0.5 bg-zinc-800 p-1 border-2 border-white/30 max-w-[320px] w-full aspect-square">
-                        {sudokuGrid.map((row, rIdx) =>
-                          row.map((cell, cIdx) => (
-                            <div
-                              key={`${rIdx}-${cIdx}`}
-                              className={`flex items-center justify-center font-mono text-sm font-bold aspect-square ${
-                                cell !== 0 ? 'bg-[#0f141c] text-white' : 'bg-[#06080b] text-zinc-600'
-                              } ${
-                                (Math.floor(rIdx / 3) + Math.floor(cIdx / 3)) % 2 === 0
-                                  ? 'border border-white/5'
-                                  : 'border border-white/10'
-                              }`}
-                            >
-                              {cell !== 0 ? cell : '·'}
+                        {novaTab === 'crc16' && (
+                          <div className="space-y-3">
+                            <span className="text-zinc-400 block">Modbus Hex Çerçevesi girin:</span>
+                            <div className="flex flex-wrap items-center gap-3">
+                              <input
+                                type="text"
+                                value={crcInputHex}
+                                onChange={(e) => setCrcInputHex(e.target.value)}
+                                className="bg-[#0b0e14] border border-white/20 px-3 py-1.5 text-xs text-white w-72"
+                              />
+                              <span className="text-emerald-400 font-bold bg-emerald-950/40 px-3 py-1.5 border border-emerald-500/30">
+                                HESAPLANAN CRC: {computeCrc16Modbus(crcInputHex)}
+                              </span>
                             </div>
-                          ))
+                          </div>
+                        )}
+
+                        {novaTab === 'registers' && (
+                          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-zinc-300">
+                            <div className="p-2.5 bg-[#050608] border border-white/10">
+                              <span className="text-zinc-500 block">REG 0x0000</span>
+                              <span className="text-white font-bold">Toprak Nemi (x10)</span>
+                            </div>
+                            <div className="p-2.5 bg-[#050608] border border-white/10">
+                              <span className="text-zinc-500 block">REG 0x0001</span>
+                              <span className="text-white font-bold">Sıcaklık (°C x10)</span>
+                            </div>
+                            <div className="p-2.5 bg-[#050608] border border-white/10">
+                              <span className="text-zinc-500 block">REG 0x0002</span>
+                              <span className="text-white font-bold">pH Değeri (x100)</span>
+                            </div>
+                            <div className="p-2.5 bg-[#050608] border border-white/10">
+                              <span className="text-zinc-500 block">REG 0x0003</span>
+                              <span className="text-white font-bold">EC İletkenlik</span>
+                            </div>
+                          </div>
                         )}
                       </div>
                     </div>
+                  </div>
+                </DeviceSimulator3D>
+              )}
 
-                    {/* Benchmark Metrics & Coroutine Metrics */}
-                    <div className="lg:col-span-6 space-y-4 text-xs font-mono">
-                      <div className="bg-[#060709] p-4 border border-white/10 space-y-2">
-                        <span className="text-zinc-500 block uppercase">ALGORİTMA PERFORMANS METRİKLERİ:</span>
-                        <div className="flex justify-between items-center py-1 border-b border-white/5">
+              {/* SLIDE 02: LensAI & SudokuMap - 3D iPhone 16 Pro Simulator */}
+              {project.id === 'lensai-sudokumap' && (
+                <DeviceSimulator3D
+                  deviceType="iphone"
+                  accentColor={project.accentColor}
+                  client={project.client}
+                  title={project.title}
+                >
+                  <div className="w-full h-full p-4 bg-[#090b0e] text-xs font-mono flex flex-col justify-between">
+                    <div>
+                      <div className="flex items-center justify-between gap-2 pb-3 border-b border-white/10 mb-3">
+                        <div className="flex items-center gap-2">
+                          <Activity className="w-3.5 h-3.5 text-[#38bdf8]" />
+                          <span className="text-white font-bold text-[11px]">
+                            FastAPI Bit-Masking
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          <button
+                            onClick={resetSudokuGrid}
+                            className="px-2 py-0.5 border border-white/20 text-[10px] text-zinc-300 hover:text-white cursor-pointer"
+                          >
+                            Sıfırla
+                          </button>
+                          <button
+                            onClick={runSudokuSolver}
+                            disabled={isSolving}
+                            className="px-2.5 py-0.5 bg-[#38bdf8] text-black font-bold text-[10px] cursor-pointer flex items-center gap-1 hover:bg-[#60a5fa]"
+                          >
+                            <Play className="w-2.5 h-2.5 fill-current" />
+                            <span>{isSolving ? '...' : 'Çöz'}</span>
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* 9x9 Interactive Matrix Grid */}
+                      <div className="flex justify-center mb-4">
+                        <div className="grid grid-cols-9 gap-0.5 bg-zinc-800 p-1 border border-white/30 w-full max-w-[270px] aspect-square">
+                          {sudokuGrid.map((row, rIdx) =>
+                            row.map((cell, cIdx) => (
+                              <div
+                                key={`${rIdx}-${cIdx}`}
+                                className={`flex items-center justify-center font-mono text-[10px] font-bold aspect-square ${
+                                  cell !== 0 ? 'bg-[#0f141c] text-white' : 'bg-[#06080b] text-zinc-600'
+                                } ${
+                                  (Math.floor(rIdx / 3) + Math.floor(cIdx / 3)) % 2 === 0
+                                    ? 'border border-white/5'
+                                    : 'border border-white/10'
+                                }`}
+                              >
+                                {cell !== 0 ? cell : '·'}
+                              </div>
+                            ))
+                          )}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Benchmark Metrics */}
+                    <div className="space-y-2 text-[10px]">
+                      <div className="bg-[#060709] p-2.5 border border-white/10 space-y-1">
+                        <div className="flex justify-between items-center">
                           <span className="text-zinc-400">Çözüm Süresi (P99):</span>
                           <span className="text-emerald-400 font-bold tabular-nums">
-                            {solveStats ? `${solveStats.timeMs} ms` : '1.82 ms (Ortalama)'}
+                            {solveStats ? `${solveStats.timeMs} ms` : '1.82 ms'}
                           </span>
                         </div>
-                        <div className="flex justify-between items-center py-1 border-b border-white/5">
-                          <span className="text-zinc-400">Geri İzleme Düğüm Budama:</span>
-                          <span className="text-white font-bold">%94.2 (Bit-masking)</span>
+                        <div className="flex justify-between items-center">
+                          <span className="text-zinc-400">Düğüm Budama:</span>
+                          <span className="text-white font-bold">%94.2</span>
                         </div>
-                        <div className="flex justify-between items-center py-1 border-b border-white/5">
-                          <span className="text-zinc-400">Firebase Skor Transaction:</span>
-                          <span className="text-sky-400 font-bold">10.4 ms (Distributed)</span>
+                        <div className="flex justify-between items-center">
+                          <span className="text-zinc-400">Firebase Transaction:</span>
+                          <span className="text-sky-400 font-bold">10.4 ms</span>
                         </div>
-                        <div className="flex justify-between items-center py-1">
-                          <span className="text-zinc-400">Eşzamanlı WebSocket İstemcisi:</span>
-                          <span className="text-amber-400 font-bold">50,000+ Aktif</span>
+                        <div className="flex justify-between items-center">
+                          <span className="text-zinc-400">Eşzamanlı Oyuncu:</span>
+                          <span className="text-amber-400 font-bold">50,000+</span>
                         </div>
-                      </div>
-
-                      <div className="text-zinc-400 text-xs leading-relaxed bg-[#060709]/60 p-3 border border-white/5">
-                        İstemci tarafında ağır hesaplamaları çalıştırmak yerine FastAPI mikroservisinde 9-bit register seviyesinde bitwise kısıt yayılımı uygulanır. Böylece düşük donanımlı mobil cihazlarda bile 0 jank ile sonuç üretilir.
                       </div>
                     </div>
-
                   </div>
-                </div>
+                </DeviceSimulator3D>
               )}
 
-              {/* SLIDE 03: Brook Mountain Resort - 120-Acre Spatial Topology */}
+              {/* SLIDE 03: Brook Mountain Resort - 3D MacBook Pro Simulator */}
               {project.id === 'brook-resort' && (
-                <div className="border border-white/10 bg-[#090b0e] p-6">
-                  <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-white/10 mb-4">
-                    <div className="flex items-center gap-3">
-                      <MapPin className="w-4 h-4 text-[#10b981]" />
-                      <span className="text-xs font-mono text-white font-bold">
-                        120 DÖNÜM TOPOLOJİ &amp; DİJİTAL SOP ROTALAMA MOTORU
-                      </span>
-                    </div>
-                    <span className="text-xs font-mono text-zinc-500">
-                      Bölge Seçerek Lojistik Süreleri İnceleyin
-                    </span>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
-                    {/* Zone Cards */}
-                    <div className="md:col-span-7 grid grid-cols-2 sm:grid-cols-3 gap-2.5">
-                      {zones.map((zone) => (
-                        <button
-                          key={zone.id}
-                          onClick={() => setSelectedZone(zone.id)}
-                          className={`p-3 text-left border text-xs font-mono transition-none cursor-pointer ${
-                            selectedZone === zone.id
-                              ? 'border-[#10b981] bg-[#10b981]/15 text-white'
-                              : 'border-white/10 bg-[#060709] text-zinc-400 hover:text-white hover:border-white/20'
-                          }`}
-                        >
-                          <span className="text-[10px] text-zinc-500 block">ZONE 0{zone.id}</span>
-                          <span className="font-bold block truncate mt-0.5">{zone.name.split(' ')[0]}</span>
-                          <div className="mt-2 text-[11px] text-zinc-300">
-                            Transit: <span className="text-emerald-400 font-bold">{zone.transitTime}</span>
-                          </div>
-                        </button>
-                      ))}
-                    </div>
-
-                    {/* Zone Details & SOP Rule */}
-                    <div className="md:col-span-5 bg-[#060709] p-4 border border-white/10 flex flex-col justify-between text-xs font-mono">
-                      <div>
-                        <div className="flex items-center justify-between pb-2 border-b border-white/10 mb-3">
-                          <span className="text-white font-bold">{zones[selectedZone - 1].name}</span>
-                          <span className="px-2 py-0.5 bg-emerald-950 text-emerald-400 border border-emerald-500/30 text-[10px]">
-                            {zones[selectedZone - 1].status}
+                <DeviceSimulator3D
+                  deviceType="macbook"
+                  accentColor={project.accentColor}
+                  client={project.client}
+                  title={project.title}
+                >
+                  <div className="w-full h-full p-6 bg-[#090b0e] text-xs font-mono flex flex-col justify-between">
+                    <div>
+                      <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-white/10 mb-4">
+                        <div className="flex items-center gap-3">
+                          <MapPin className="w-4 h-4 text-[#10b981]" />
+                          <span className="text-white font-bold">
+                            120 Dönüm Tesis Topolojisi &amp; Dijital SOP Rotalama
                           </span>
                         </div>
-                        <p className="text-zinc-400 text-xs mb-3 leading-relaxed">
-                          {zones[selectedZone - 1].desc}
-                        </p>
-                        <div className="space-y-1.5 text-zinc-300">
-                          <div className="flex justify-between">
-                            <span className="text-zinc-500">Aktif Görevli:</span>
-                            <span className="text-white font-bold">{zones[selectedZone - 1].staffActive} Personel</span>
+                        <span className="text-zinc-500">
+                          Bölge Seçerek Lojistik Süreleri İnceleyin
+                        </span>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+                        {/* Zone Cards */}
+                        <div className="md:col-span-7 grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+                          {zones.map((zone) => (
+                            <button
+                              key={zone.id}
+                              onClick={() => setSelectedZone(zone.id)}
+                              className={`p-3 text-left border text-xs font-mono transition-none cursor-pointer ${
+                                selectedZone === zone.id
+                                  ? 'border-[#10b981] bg-[#10b981]/15 text-white'
+                                  : 'border-white/10 bg-[#060709] text-zinc-400 hover:text-white hover:border-white/20'
+                              }`}
+                            >
+                              <span className="text-[10px] text-zinc-500 block">ZONE 0{zone.id}</span>
+                              <span className="font-bold block truncate mt-0.5">{zone.name.split(' ')[0]}</span>
+                              <div className="mt-2 text-[11px] text-zinc-300">
+                                Transit: <span className="text-emerald-400 font-bold">{zone.transitTime}</span>
+                              </div>
+                            </button>
+                          ))}
+                        </div>
+
+                        {/* Zone Details & SOP Rule */}
+                        <div className="md:col-span-5 bg-[#060709] p-4 border border-white/10 flex flex-col justify-between text-xs font-mono">
+                          <div>
+                            <div className="flex items-center justify-between pb-2 border-b border-white/10 mb-3">
+                              <span className="text-white font-bold">{zones[selectedZone - 1].name}</span>
+                              <span className="px-2 py-0.5 bg-emerald-950 text-emerald-400 border border-emerald-500/30 text-[10px]">
+                                {zones[selectedZone - 1].status}
+                              </span>
+                            </div>
+                            <p className="text-zinc-400 text-xs mb-3 leading-relaxed">
+                              {zones[selectedZone - 1].desc}
+                            </p>
+                            <div className="space-y-1.5 text-zinc-300">
+                              <div className="flex justify-between">
+                                <span className="text-zinc-500">Aktif Görevli:</span>
+                                <span className="text-white font-bold">{zones[selectedZone - 1].staffActive} Personel</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span className="text-zinc-500">Mutfak Hub Mesafesi:</span>
+                                <span className="text-white font-bold">{zones[selectedZone - 1].transitTime}</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span className="text-zinc-500">SOP Standart Kodu:</span>
+                                <span className="text-[#10b981] font-bold">SOP-DISPATCH-0{selectedZone}</span>
+                              </div>
+                            </div>
                           </div>
-                          <div className="flex justify-between">
-                            <span className="text-zinc-500">Mutfak Hub Mesafesi:</span>
-                            <span className="text-white font-bold">{zones[selectedZone - 1].transitTime}</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span className="text-zinc-500">SOP Standart Kodu:</span>
-                            <span className="text-[#10b981] font-bold">SOP-DISPATCH-0{selectedZone}</span>
+
+                          <div className="pt-3 border-t border-white/10 mt-3 text-[11px] text-zinc-500">
+                            Oda servisi süresi 45 dakikadan 23 dakikaya indirilmiştir (%48 hızlanma).
                           </div>
                         </div>
                       </div>
-
-                      <div className="pt-3 border-t border-white/10 mt-3 text-[11px] text-zinc-500">
-                        Oda servisi süresi 45 dakikadan 23 dakikaya indirilmiştir (%48 hızlanma).
-                      </div>
                     </div>
                   </div>
-                </div>
+                </DeviceSimulator3D>
               )}
 
-              {/* SLIDE 04: Derin Demirkaya 3D Flight Sim */}
+              {/* SLIDE 04: Derin Demirkaya 3D Flight Sim - 3D MacBook Pro Simulator */}
               {project.id === 'flight-sim' && (
-                <div data-cursor="DRAG 3D">
-                  <ThreeFlightSim />
-                </div>
+                <DeviceSimulator3D
+                  deviceType="macbook"
+                  accentColor={project.accentColor}
+                  client={project.client}
+                  title={project.title}
+                >
+                  <div className="w-full h-full p-4 bg-[#07080a]" data-cursor="DRAG 3D">
+                    <ThreeFlightSim />
+                  </div>
+                </DeviceSimulator3D>
               )}
 
+              {/* Bottom Visual Transition Cue */}
+              <div className="mt-12 pt-6 border-t border-white/10 flex flex-wrap items-center justify-between gap-4 text-xs font-mono text-zinc-400">
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400" />
+                  <span>
+                    Proje 0{idx + 1} / 0{CASE_STUDIES.length} Sonu • {project.client}
+                  </span>
+                </div>
+                {idx < CASE_STUDIES.length - 1 ? (
+                  <div className="flex items-center gap-2 text-[#00FF66]">
+                    <span>Kaydırmaya devam ederek sonraki projeye geçin</span>
+                    <ChevronRight className="w-4 h-4 animate-pulse" />
+                  </div>
+                ) : (
+                  <span className="text-zinc-500">Seçili Projelerin Sonu</span>
+                )}
+              </div>
             </div>
           </div>
         ))}
@@ -1017,8 +1101,8 @@ uart_write_bytes(UART_NUM_2, (const char*)request_frame, sizeof(request_frame));
               <div className="bg-[#050608] border border-white/15 p-5">
                 <div className="flex items-center justify-between pb-3 border-b border-white/10 mb-4 text-xs font-mono">
                   <div className="flex items-center gap-2 text-zinc-400">
-                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                    <span>SYSTEM_RUNTIME_TRACE_DIAGNOSTICS</span>
+                    <Terminal className="w-3.5 h-3.5 text-emerald-400" />
+                    <span>Sistem Çalışma Zamanı Logları</span>
                   </div>
                   <button
                     onClick={() => copyTerminalLogs(deepDiveProject.deepDive?.terminalLogs || [])}

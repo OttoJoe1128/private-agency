@@ -413,16 +413,13 @@ export default function ThreeFlightSim() {
       <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 bg-[#0e1117] border-b border-white/10 text-xs font-mono text-zinc-400">
         <div className="flex items-center gap-2">
           <Compass className="w-3.5 h-3.5 text-sky-400" />
-          <span className="text-white font-bold">3D_FLIGHT_SIM</span>
+          <span className="text-white font-bold">3D Uçuş Simülatörü</span>
           <span aria-hidden="true" className="text-zinc-600">·</span>
-          <span className="text-[11px] text-zinc-400">{threadMode}</span>
+          <span className="text-[11px] text-zinc-400">{workerActive ? 'OffscreenCanvas Worker' : 'WebGL / Canvas'}</span>
         </div>
         <div className="flex items-center gap-3">
-          <span className="flex items-center gap-1.5 text-zinc-400">
-            <Cpu className="w-3 h-3 text-emerald-400" />
-            <span>RENDER_TICKER:</span>
-          </span>
-          <span className="text-amber-400 tabular-nums font-bold font-mono">{fps} FPS</span>
+          <span className="text-zinc-400">Kare Hızı:</span>
+          <span className="text-emerald-400 tabular-nums font-bold font-mono">{fps} FPS</span>
         </div>
       </div>
 

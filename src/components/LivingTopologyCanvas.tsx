@@ -262,15 +262,11 @@ export default function LivingTopologyCanvas() {
 
       {/* Real-time Technical Overlay */}
       <div className="absolute top-3 left-3 flex items-center gap-3 text-xs font-mono text-zinc-400">
-        <span>TOPOLOGY_BUS</span>
+        <span>Ağ Düğümleri</span>
         <span aria-hidden="true">·</span>
-        <span className="tabular-nums">{activeNodesCount} NODES ACTIVE</span>
+        <span className="tabular-nums">{activeNodesCount} Aktif Düğüm</span>
         <span aria-hidden="true">·</span>
-        <span className="text-amber-400 tabular-nums">{fps} FPS</span>
-      </div>
-
-      <div className="absolute bottom-3 right-3 text-[10px] font-mono text-zinc-500">
-        CANVAS2D / INTERACTIVE PHYSICS
+        <span className="text-emerald-400 tabular-nums">{fps} FPS</span>
       </div>
     </div>
   );

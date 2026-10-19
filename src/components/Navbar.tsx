@@ -73,7 +73,7 @@ export default function Navbar({ onNavigate }: NavbarProps) {
             onMouseEnter={() => sound.playHover()}
             className="hover:text-white transition-colors whitespace-nowrap shrink-0 cursor-pointer text-[#00FF66] flex items-center gap-1.5 font-mono"
           >
-            <span className="w-1.5 h-1.5 bg-[#00FF66] rounded-none animate-pulse" />
+            <Terminal className="w-3.5 h-3.5 text-[#00FF66]" />
             <span>SLISS [⌘K]</span>
           </button>
         </nav>
@@ -81,19 +81,19 @@ export default function Navbar({ onNavigate }: NavbarProps) {
         {/* Zone 3: Audio Toggle + 1 Primary Action */}
         <div className="flex items-center gap-3 shrink-0">
           
-          {/* Cybernetic Web Audio Toggle */}
+          {/* Cyber-Tactile Web Audio Toggle */}
           <button
             onClick={toggleSound}
             className={`p-2 border text-xs font-mono transition-none cursor-pointer flex items-center gap-1.5 ${
               !isMuted
-                ? 'border-[#00FF66]/50 bg-[#00FF66]/10 text-[#00FF66]'
+                ? 'border-emerald-500/40 bg-emerald-950/20 text-emerald-400'
                 : 'border-white/10 text-zinc-500 hover:text-white hover:border-white/20'
             }`}
-            title={!isMuted ? 'Sesi Kapat (Mute)' : 'Cyber-Tactile Sesi Aç (Unmute)'}
+            title={!isMuted ? 'Sesi Kapat' : 'Sesi Aç'}
             data-cursor="AUDIO"
           >
             {!isMuted ? <Volume2 className="w-3.5 h-3.5" /> : <VolumeX className="w-3.5 h-3.5" />}
-            <span className="text-[10px] hidden sm:inline">{!isMuted ? 'FX_ON' : 'MUTED'}</span>
+            <span className="text-[10px] hidden sm:inline">{!isMuted ? 'SES: AÇIK' : 'SES: KAPALI'}</span>
           </button>
 
           <button

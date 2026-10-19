@@ -1,9 +1,9 @@
 import Navbar from './components/Navbar.tsx';
 import Hero from './components/Hero.tsx';
 import KineticMarquee from './components/KineticMarquee.tsx';
+import GitHubTelemetryLab from './components/GitHubTelemetryLab.tsx';
 import SpatialTunnel from './components/SpatialTunnel.tsx';
 import CaseStudies from './components/CaseStudies.tsx';
-import AgencyShowcase from './components/AgencyShowcase.tsx';
 import BriefModule from './components/BriefModule.tsx';
 import CommandPalette from './components/CommandPalette.tsx';
 import Footer from './components/Footer.tsx';
@@ -23,13 +23,13 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-[#0D0D0D] text-[#e2e8f0] flex flex-col selection:bg-white selection:text-black">
-      {/* Awwwards Custom Magnetic Spring Physics Cursor (Desktop fine-pointer only) */}
+      {/* Custom Magnetic Spring Physics Cursor */}
       <CustomCursor />
 
-      {/* FAZ 1: SLISS (AI Core & Linear-Style Command Palette) */}
+      {/* SLISS AI Core & Command Palette */}
       <CommandPalette onNavigate={scrollToSection} />
 
-      {/* 3-Zone Strict Top Bar Contract */}
+      {/* Top Bar Navigation */}
       <Navbar onNavigate={scrollToSection} />
 
       {/* Main Content Area */}
@@ -40,16 +40,16 @@ export default function App() {
         {/* 2. Velocity-Responsive Kinetic Typography Marquee */}
         <KineticMarquee />
 
-        {/* 3. Agency Background & Open-Source Repositories */}
-        <AgencyShowcase />
+        {/* 3. 3D GitHub Telemetrisi & R&D Lab */}
+        <GitHubTelemetryLab />
 
-        {/* 4. FAZ 2: 3D Z-Axis Uzay Portalı (Spatial Tunnel Navigation) */}
+        {/* 4. 3D Z-Axis Uzay Portalı (Spatial Tunnel Navigation) */}
         <SpatialTunnel />
 
-        {/* 5. Selected Works: GSAP ScrollTrigger Horizontal Pinning */}
+        {/* 4. Selected Works: GSAP ScrollTrigger Horizontal Pinning */}
         <CaseStudies />
 
-        {/* 6. Cyber-Tactile Technical Brief Engine */}
+        {/* 5. Cyber-Tactile Technical Brief Engine */}
         <div data-cursor="INITIATE">
           <BriefModule />
         </div>

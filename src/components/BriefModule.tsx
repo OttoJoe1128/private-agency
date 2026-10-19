@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { SystemBriefPayload } from '../types/index.ts';
+import { sound } from '../utils/soundEngine.ts';
 import {
   Send,
   FileJson,
@@ -42,6 +43,7 @@ export default function BriefModule() {
 
   const [activeCodeTab, setActiveCodeTab] = useState<'json' | 'pydantic' | 'curl'>('json');
   const [submittedReceipt, setSubmittedReceipt] = useState<SystemBriefPayload | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [copied, setCopied] = useState<boolean>(false);
   const [receiptCopied, setReceiptCopied] = useState<boolean>(false);
 
@@ -281,10 +283,9 @@ Sistem Durumu: DOĞRULANDI & ARŞİVLENDİ [200 OK]
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-14 pb-8 border-b border-white/10">
           <div>
             <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-zinc-500 mb-2">
-              <span className="w-2 h-2 bg-[#00FF66] shadow-[0_0_8px_#00FF66]" />
-              <span className="text-white font-bold">FAZ 4: ANALİTİK BRİEF &amp; KOMİSYON MODÜLÜ</span>
+              <span className="text-white font-bold">Analitik Brief &amp; Şartname</span>
               <span className="text-zinc-700">·</span>
-              <span className="text-[#00FF66]">MİMARINI SÜRECE DAHİL ET</span>
+              <span className="text-[#00FF66]">Mimarını Sürece Dahil Et</span>
             </div>
             <h2 className="text-3xl md:text-5xl font-black text-white tracking-tight font-display">
               Parametrik Şartname Motoru
@@ -293,10 +294,10 @@ Sistem Durumu: DOĞRULANDI & ARŞİVLENDİ [200 OK]
 
           <div className="max-w-md text-xs font-mono text-zinc-400 bg-[#090b0e] p-4 border border-white/10">
             <div className="flex items-center justify-between mb-1">
-              <span className="text-emerald-400 font-bold">CANLI PYDANTIC TELEMETRİSİ:</span>
-              <span className="text-[10px] text-zinc-500 uppercase">{metrics.level}</span>
+              <span className="text-emerald-400 font-bold">Şartname Şeması:</span>
+              <span className="text-[10px] text-zinc-500 uppercase">{metrics.level.replace('// ', '')}</span>
             </div>
-            Parametreleri seçtiğiniz anda arka plandaki `/api/v1/system-brief` veri şeması deterministik olarak güncellenir.
+            Parametreleri seçtiğiniz anda sistem mimarisi veri şeması otomatik olarak güncellenir.
           </div>
         </div>
 
@@ -307,12 +308,12 @@ Sistem Durumu: DOĞRULANDI & ARŞİVLENDİ [200 OK]
           <div className="lg:col-span-7 bg-[#090b0e] border border-white/10 p-6 md:p-8">
             <form onSubmit={handleSubmit} className="space-y-8">
               
-              {/* 1. Sistem İhtiyacı (system_need) */}
+              {/* 1. Sistem İhtiyacı */}
               <div>
                 <div className="flex items-center justify-between mb-3">
                   <label className="text-xs font-mono uppercase tracking-wider text-white font-bold flex items-center gap-2">
                     <span className="text-[#00FF66]">01.</span>
-                    <span>TEMEL SİSTEM İHTİYACI (system_need)</span>
+                    <span>Temel Sistem İhtiyacı</span>
                   </label>
                   <span className="text-[10px] font-mono text-zinc-500 uppercase">ZORUNLU SEÇİM</span>
                 </div>
@@ -339,12 +340,12 @@ Sistem Durumu: DOĞRULANDI & ARŞİVLENDİ [200 OK]
                 </div>
               </div>
 
-              {/* 2. Veri Hacmi & Gecikme Skalası (throughput_scale) */}
+              {/* 2. Veri Hacmi & Gecikme Skalası */}
               <div>
                 <div className="flex items-center justify-between mb-3">
                   <label className="text-xs font-mono uppercase tracking-wider text-white font-bold flex items-center gap-2">
                     <span className="text-[#00FF66]">02.</span>
-                    <span>VERİ HACMİ &amp; GECİKME ÖLÇEĞİ (throughput_scale)</span>
+                    <span>Veri Hacmi &amp; Gecikme Ölçeği</span>
                   </label>
                   <span className="text-[10px] font-mono text-emerald-400 font-bold">{metrics.sla}</span>
                 </div>
@@ -377,12 +378,12 @@ Sistem Durumu: DOĞRULANDI & ARŞİVLENDİ [200 OK]
                 </div>
               </div>
 
-              {/* 3. Fiziksel Katman Gereksinimi (physical_integration) */}
+              {/* 3. Fiziksel Katman Gereksinimi */}
               <div>
                 <div className="flex items-center justify-between mb-3">
                   <label className="text-xs font-mono uppercase tracking-wider text-white font-bold flex items-center gap-2">
                     <span className="text-[#00FF66]">03.</span>
-                    <span>FİZİKSEL KATMAN ENTEGRASYONU (physical_integration)</span>
+                    <span>Fiziksel Katman Entegrasyonu</span>
                   </label>
                   <span className="text-[10px] font-mono text-zinc-500 uppercase">DONANIM / SENSÖR</span>
                 </div>
@@ -409,12 +410,12 @@ Sistem Durumu: DOĞRULANDI & ARŞİVLENDİ [200 OK]
                 </div>
               </div>
 
-              {/* 4. Zaman Takvimi (timeline_scale) */}
+              {/* 4. Zaman Takvimi */}
               <div>
                 <div className="flex items-center justify-between mb-3">
                   <label className="text-xs font-mono uppercase tracking-wider text-white font-bold flex items-center gap-2">
                     <span className="text-[#00FF66]">04.</span>
-                    <span>HEDEF ZAMAN PLANI (timeline_scale)</span>
+                    <span>Hedef Zaman Planı</span>
                   </label>
                   <span className="text-[10px] font-mono text-zinc-500 uppercase">TESLİM VE ANGAJMAN</span>
                 </div>
@@ -493,7 +494,7 @@ Sistem Durumu: DOĞRULANDI & ARŞİVLENDİ [200 OK]
                 data-cursor="GENERATE"
               >
                 <Send className="w-4 h-4 fill-current" />
-                <span>MİMARİ ŞARTNAME FİŞİNİ OLUŞTUR VE DOĞRULA</span>
+                <span>Mimari Şartname Fişini Oluştur</span>
               </button>
 
             </form>
@@ -574,7 +575,7 @@ Sistem Durumu: DOĞRULANDI & ARŞİVLENDİ [200 OK]
               <div className="flex items-center justify-between border-b border-dashed border-white/20 pb-4 mb-4">
                 <div>
                   <div className="text-[10px] text-[#00FF66] uppercase tracking-widest font-bold">
-                    ENGINEERING LIVING SYSTEMS // MİMARİ ŞARTNAME FİŞİ
+                    Engineering Living Systems · Mimari Şartname Fişi
                   </div>
                   <div className="text-base font-bold text-white tracking-wider mt-0.5">
                     {activePayload.specification_id}

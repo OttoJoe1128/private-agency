@@ -47,4 +47,9 @@ export interface SystemBriefPayload {
   architectural_notes: string;
   timestamp: string;
   specification_id: string;
+  receiptId?: string;
+  sha256_checksum?: string;
+  status?: string;
+  sla_level?: string;
+  pipeline_verdict?: string;
 }
