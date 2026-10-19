@@ -32,13 +32,13 @@ interface BriefFormData {
 
 export default function BriefModule() {
   const [formData, setFormData] = useState<BriefFormData>({
-    systemNeed: 'iot-hardware',
-    throughputScale: 'high-concurrency',
-    physicalIntegration: 'rs485-modbus',
-    timelineScale: 'production-8w',
-    clientEntity: 'Nova Agro Systems Corp',
-    contactEndpoint: 'mimarlik@nova-agro.io',
-    architecturalNotes: 'ESP32 ve RS485 Modbus sensör hattı üzerinde 120Ω sonlandırma ile deterministik gecikme hedefleniyor.',
+    systemNeed: '',
+    throughputScale: '',
+    physicalIntegration: '',
+    timelineScale: '',
+    clientEntity: '',
+    contactEndpoint: '',
+    architecturalNotes: '',
   });
 
   const [activeCodeTab, setActiveCodeTab] = useState<'json' | 'pydantic' | 'curl'>('json');
@@ -158,21 +158,25 @@ export default function BriefModule() {
   const metrics = computeSystemMetrics();
 
   const getSystemNeedLabel = (id: string) => {
+    if (!id) return 'Seçiniz';
     const found = SYSTEM_NEEDS.find((s) => s.id === id);
     return found ? `${found.title} (${found.tag})` : id;
   };
 
   const getThroughputLabel = (id: string) => {
+    if (!id) return 'Seçiniz';
     const found = THROUGHPUT_SCALES.find((t) => t.id === id);
     return found ? `${found.title} [${found.metric}]` : id;
   };
 
   const getPhysicalLabel = (id: string) => {
+    if (!id) return 'Seçiniz';
     const found = PHYSICAL_INTEGRATIONS.find((p) => p.id === id);
     return found ? `${found.title} [${found.badge}]` : id;
   };
 
   const getTimelineLabel = (id: string) => {
+    if (!id) return 'Seçiniz';
     const found = TIMELINES.find((t) => t.id === id);
     return found ? `${found.title} (${found.duration})` : id;
   };
@@ -184,9 +188,9 @@ export default function BriefModule() {
     throughput_scale: getThroughputLabel(formData.throughputScale),
     physical_integration: getPhysicalLabel(formData.physicalIntegration),
     timeline_scale: getTimelineLabel(formData.timelineScale),
-    client_entity: formData.clientEntity.trim() || 'Nova Agro Systems Corp',
-    contact_endpoint: formData.contactEndpoint.trim() || 'mimarlik@nova-agro.io',
-    architectural_notes: formData.architecturalNotes.trim() || 'Belirlenmiş mimari kısıtlama bulunmuyor.',
+    client_entity: formData.clientEntity.trim(),
+    contact_endpoint: formData.contactEndpoint.trim(),
+    architectural_notes: formData.architecturalNotes.trim(),
     timestamp: new Date().toISOString(),
   };
 
@@ -194,29 +198,29 @@ export default function BriefModule() {
 
   // Code snippets
   const pydanticSnippet = `# FastAPI / Pydantic v2 Strict Specification Schema
-from pydantic import BaseModel, Field, EmailStr
-from datetime import datetime
+ from pydantic import BaseModel, Field, EmailStr
+ from datetime import datetime
 
-class SystemBriefSchema(BaseModel):
-    specification_id: str = Field(..., regex=r"^SPEC-2026-[A-Z0-9]+$")
-    system_need: str = Field(description="Architectural discipline category")
-    throughput_scale: str = Field(description="Deterministic latency SLA")
-    physical_integration: str = Field(description="Hardware and bus topology")
-    timeline_scale: str = Field(description="Project execution duration")
-    client_entity: str = Field(min_length=2, max_length=120)
-    contact_endpoint: str = Field(description="Email or Telegram handle")
-    architectural_notes: str = Field(default="")
-    timestamp: datetime = Field(default_factory=datetime.utcnow)
+ class SystemBriefSchema(BaseModel):
+     specification_id: str = Field(..., regex=r"^SPEC-2026-[A-Z0-9]+$")
+     system_need: str = Field(description="Architectural discipline category")
+     throughput_scale: str = Field(description="Deterministic latency SLA")
+     physical_integration: str = Field(description="Hardware and bus topology")
+     timeline_scale: str = Field(description="Project execution duration")
+     client_entity: str = Field(min_length=2, max_length=120)
+     contact_endpoint: str = Field(description="Email or Telegram handle")
+     architectural_notes: str = Field(default="")
+     timestamp: datetime = Field(default_factory=datetime.utcnow)
 
-    class Config:
-        frozen = True
-        extra = "forbid"`;
+     class Config:
+         frozen = True
+         extra = "forbid"`;
 
   const curlSnippet = `# Terminal Üzerinden Sistem Briefi İletme Komutu
-curl -X POST "https://systems.agency/api/v1/system-brief" \\
-  -H "Content-Type: application/json" \\
-  -H "X-Spec-Version: 2026.4" \\
-  -d '${JSON.stringify(activePayload, null, 2)}'`;
+ curl -X POST "https://systems.agency/api/v1/system-brief" \\
+   -H "Content-Type: application/json" \\
+   -H "X-Spec-Version: 2026.4" \\
+   -d '${JSON.stringify(activePayload, null, 2)}'`;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -258,22 +262,22 @@ curl -X POST "https://systems.agency/api/v1/system-brief" \\
   const handleCopyReceipt = () => {
     if (!activePayload) return;
     const receiptText = `=== ENGINEERING LIVING SYSTEMS // MİMARİ ŞARTNAME FİŞİ ===
-Şartname No   : ${activePayload.specification_id}
-Zaman Damgası : ${activePayload.timestamp}
-Kurum / İstemci: ${activePayload.client_entity}
-İletişim Noktası: ${activePayload.contact_endpoint}
+ Şartname No   : ${activePayload.specification_id}
+ Zaman Damgası : ${activePayload.timestamp}
+ Kurum / İstemci: ${activePayload.client_entity || '-'}
+ İletişim Noktası: ${activePayload.contact_endpoint || '-'}
 
-[PARAMETRİK MİMARİ SEÇİMLERİ]
-1. Sistem İhtiyacı      : ${activePayload.system_need}
-2. Veri Hacmi & Gecikme : ${activePayload.throughput_scale}
-3. Donanım Entegrasyonu : ${activePayload.physical_integration}
-4. Zaman Takvimi        : ${activePayload.timeline_scale}
+ [PARAMETRİK MİMARİ SEÇİMLERİ]
+ 1. Sistem İhtiyacı      : ${activePayload.system_need}
+ 2. Veri Hacmi & Gecikme : ${activePayload.throughput_scale}
+ 3. Donanım Entegrasyonu : ${activePayload.physical_integration}
+ 4. Zaman Takvimi        : ${activePayload.timeline_scale}
 
-[MİMARİ NOTLAR]
-${activePayload.architectural_notes}
+ [MİMARİ NOTLAR]
+ ${activePayload.architectural_notes || '-'}
 
-Sistem Durumu: DOĞRULANDI & ARŞİVLENDİ [200 OK]
-============================================================`;
+ Sistem Durumu: DOĞRULANDI & ARŞİVLENDİ [200 OK]
+ ============================================================`;
     navigator.clipboard.writeText(receiptText);
     setReceiptCopied(true);
     setTimeout(() => setReceiptCopied(false), 2000);
@@ -293,9 +297,9 @@ Sistem Durumu: DOĞRULANDI & ARŞİVLENDİ [200 OK]
   };
 
   return (
-    <section id="brief-module" className="py-24 bg-[#060709] bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:40px_40px] select-text">
+    <section id="brief-module" className="py-24 bg-[#060709] bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:40px_40px]">
       <div className="max-w-7xl mx-auto px-6 sm:px-8">
-        
+
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-14 pb-8 px-8 pt-14">
           <div>
@@ -320,11 +324,11 @@ Sistem Durumu: DOĞRULANDI & ARŞİVLENDİ [200 OK]
 
         {/* 2-Column Interface: Left Parametric Form, Right Code Inspector & Live Receipt */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          
+
           {/* Left Column: Parametric Selection Matrix */}
           <div className="lg:col-span-7 bg-[#090b0e] p-6 md:p-8">
             <form onSubmit={handleSubmit} className="space-y-8">
-              
+
               {/* 1. Sistem İhtiyacı */}
               <div>
                 <div className="flex items-center justify-between mb-3">
@@ -480,8 +484,9 @@ Sistem Durumu: DOĞRULANDI & ARŞİVLENDİ [200 OK]
                     İletişim Noktası (E-Posta / Telegram)
                   </label>
                   <input
-                    type="text"
+                    type="email"
                     required
+                    autoComplete="email"
                     placeholder="ornek@alanadi.com"
                     value={formData.contactEndpoint}
                     onChange={(e) => setFormData({ ...formData, contactEndpoint: e.target.value })}
@@ -508,7 +513,7 @@ Sistem Durumu: DOĞRULANDI & ARŞİVLENDİ [200 OK]
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className={`w-full py-4 bg-[#00FF66] text-black font-bold text-xs font-mono uppercase tracking-widest flex items-center justify-center gap-2.5 transition-all cursor-pointer shadow-[0_0_30px_rgba(0,255,102,0.2)] ${
+                className={`w-full py-4 bg-[#00FF66] text-black font-bold text-xs font-mono uppercase tracking-widest flex items-center justify-center gap-2.5 transition-all cursor-pointer ${
                   isSubmitting ? 'opacity-50 cursor-wait' : 'hover:bg-[#20ff77]'
                 }`}
                 data-cursor="GENERATE"
@@ -526,10 +531,10 @@ Sistem Durumu: DOĞRULANDI & ARŞİVLENDİ [200 OK]
 
           {/* Right Column: Live Pydantic/FastAPI Code Inspector & Brutalist Commission Receipt */}
           <div className="lg:col-span-5 space-y-6">
-            
+
             {/* Live Code & Schema Inspector */}
             <div className="bg-[#090b0e] p-6">
-              
+
               {/* Header with Switchers */}
               <div className="flex items-center justify-between pb-3 mb-4 text-xs font-mono">
                 <div className="flex items-center gap-2">
@@ -594,7 +599,7 @@ Sistem Durumu: DOĞRULANDI & ARŞİVLENDİ [200 OK]
 
             {/* Brutalist Architectural Commission Receipt (Generated upon submission or preview) */}
             <div className="bg-[#0b0e14] p-6 md:p-8 font-mono text-xs relative overflow-hidden">
-              
+
               {/* Receipt Top Stamp */}
               <div className="flex items-center justify-between pb-4 mb-4">
                 <div>
@@ -615,11 +620,11 @@ Sistem Durumu: DOĞRULANDI & ARŞİVLENDİ [200 OK]
               <div className="space-y-3 text-zinc-300">
                 <div className="flex justify-between pt-2">
                   <span className="text-zinc-500">İSTEMCİ / KURUM:</span>
-                  <span className="text-white font-bold truncate max-w-[200px]">{activePayload.client_entity}</span>
+                  <span className="text-white font-bold truncate max-w-[200px]">{activePayload.client_entity || '-'}</span>
                 </div>
                 <div className="flex justify-between pt-2">
                   <span className="text-zinc-500">İLETİŞİM NOKTASI:</span>
-                  <span className="text-white font-bold truncate max-w-[200px]">{activePayload.contact_endpoint}</span>
+                  <span className="text-white font-bold truncate max-w-[200px]">{activePayload.contact_endpoint || '-'}</span>
                 </div>
                 <div className="flex justify-between pt-2">
                   <span className="text-zinc-500">SİSTEM İHTİYACI:</span>
@@ -640,7 +645,7 @@ Sistem Durumu: DOĞRULANDI & ARŞİVLENDİ [200 OK]
                 <div className="pt-2">
                   <span className="text-zinc-500 block mb-1">MİMARİ NOT:</span>
                   <p className="text-zinc-300 text-[11px] leading-relaxed line-clamp-2">
-                    {activePayload.architectural_notes}
+                    {activePayload.architectural_notes || '-'}
                   </p>
                 </div>
               </div>
@@ -681,9 +686,9 @@ Sistem Durumu: DOĞRULANDI & ARŞİVLENDİ [200 OK]
                 <span className="text-zinc-400 text-[11px]">Sistem briefi öncelikli inceleme kuyruğuna alınır.</span>
               </div>
               <a
-                href={`mailto:sircaedebiyat@gmail.com?subject=Mimari%20Şartname%20${activePayload.specification_id}&body=${encodeURIComponent(
-                  `Şartname ID: ${activePayload.specification_id}\nİstemci: ${activePayload.client_entity}\nSistem: ${activePayload.system_need}\nGecikme: ${activePayload.throughput_scale}\nDonanım: ${activePayload.physical_integration}`
-                )}`}
+                href={`mailto:hello@private-agency.com?subject=Mimari%20Şartname%20${activePayload.specification_id}&body=${encodeURIComponent(
+                  `Şartname ID: ${activePayload.specification_id}\nİstemci: ${activePayload.client_entity || '-'}\nSistem: ${activePayload.system_need}\nGecikme: ${activePayload.throughput_scale}\nDonanım: ${activePayload.physical_integration}\n`)
+                }`}
                 className="px-3.5 py-2 bg-white/10 hover:bg-white hover:text-black text-white font-bold transition-none shrink-0"
               >
                 MİMARA İLET ↗
