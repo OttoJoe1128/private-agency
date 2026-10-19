@@ -3,20 +3,10 @@ import { SystemBriefPayload } from '../types/index.ts';
 import { sound } from '../utils/soundEngine.ts';
 import {
   Send,
-  FileJson,
   Check,
   Copy,
   Download,
   Terminal,
-  CheckCircle2,
-  Cpu,
-  Layers,
-  Sparkles,
-  ShieldCheck,
-  Activity,
-  ArrowRight,
-  ExternalLink,
-  Printer,
   RotateCcw
 } from 'lucide-react';
 
@@ -142,7 +132,6 @@ export default function BriefModule() {
     },
   ];
 
-  // Dynamic Complexity & Architecture Metrics
   const computeSystemMetrics = () => {
     let complexityScore = 1;
     if (formData.systemNeed === 'iot-hardware' || formData.systemNeed === 'spatial-3d') complexityScore += 2;
@@ -181,7 +170,6 @@ export default function BriefModule() {
     return found ? `${found.title} (${found.duration})` : id;
   };
 
-  // Generate Current Specification Payload
   const currentPayload: SystemBriefPayload = {
     specification_id: 'SPEC-2026-' + Math.random().toString(36).substring(2, 7).toUpperCase(),
     system_need: getSystemNeedLabel(formData.systemNeed),
@@ -196,34 +184,49 @@ export default function BriefModule() {
 
   const activePayload = submittedReceipt || currentPayload;
 
-  // Code snippets
   const pydanticSnippet = `# FastAPI / Pydantic v2 Strict Specification Schema
- from pydantic import BaseModel, Field, EmailStr
- from datetime import datetime
+from pydantic import BaseModel, Field, EmailStr
+from datetime import datetime
 
- class SystemBriefSchema(BaseModel):
-     specification_id: str = Field(..., regex=r"^SPEC-2026-[A-Z0-9]+$")
-     system_need: str = Field(description="Architectural discipline category")
-     throughput_scale: str = Field(description="Deterministic latency SLA")
-     physical_integration: str = Field(description="Hardware and bus topology")
-     timeline_scale: str = Field(description="Project execution duration")
-     client_entity: str = Field(min_length=2, max_length=120)
-     contact_endpoint: str = Field(description="Email or Telegram handle")
-     architectural_notes: str = Field(default="")
-     timestamp: datetime = Field(default_factory=datetime.utcnow)
+class SystemBriefSchema(BaseModel):
+    specification_id: str = Field(..., regex=r"^SPEC-2026-[A-Z0-9]+$")
+    system_need: str = Field(description="Architectural discipline category")
+    throughput_scale: str = Field(description="Deterministic latency SLA")
+    physical_integration: str = Field(description="Hardware and bus topology")
+    timeline_scale: str = Field(description="Project execution duration")
+    client_entity: str = Field(min_length=2, max_length=120)
+    contact_endpoint: str = Field(description="Email or Telegram handle")
+    architectural_notes: str = Field(default="")
+    timestamp: datetime = Field(default_factory=datetime.utcnow)
 
-     class Config:
-         frozen = True
-         extra = "forbid"`;
+    class Config:
+        frozen = True
+        extra = "forbid"`;
 
   const curlSnippet = `# Terminal Üzerinden Sistem Briefi İletme Komutu
- curl -X POST "https://systems.agency/api/v1/system-brief" \\
-   -H "Content-Type: application/json" \\
-   -H "X-Spec-Version: 2026.4" \\
-   -d '${JSON.stringify(activePayload, null, 2)}'`;
+curl -X POST "https://systems.agency/api/v1/system-brief" \\
+  -H "Content-Type: application/json" \\
+  -H "X-Spec-Version: 2026.4" \\
+  -d '${JSON.stringify(activePayload, null, 2)}'`;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    const isIncomplete = [
+      formData.systemNeed,
+      formData.throughputScale,
+      formData.physicalIntegration,
+      formData.timelineScale,
+      formData.clientEntity,
+      formData.contactEndpoint,
+      formData.architecturalNotes,
+    ].some((value) => !String(value).trim());
+
+    if (isIncomplete) {
+      sound.playClick();
+      return;
+    }
+
     setIsSubmitting(true);
     sound.playClick();
     try {
@@ -262,22 +265,22 @@ export default function BriefModule() {
   const handleCopyReceipt = () => {
     if (!activePayload) return;
     const receiptText = `=== ENGINEERING LIVING SYSTEMS // MİMARİ ŞARTNAME FİŞİ ===
- Şartname No   : ${activePayload.specification_id}
- Zaman Damgası : ${activePayload.timestamp}
- Kurum / İstemci: ${activePayload.client_entity || '-'}
- İletişim Noktası: ${activePayload.contact_endpoint || '-'}
+Şartname No   : ${activePayload.specification_id}
+Zaman Damgası : ${activePayload.timestamp}
+Kurum / İstemci: ${activePayload.client_entity || '-'}
+İletişim Noktası: ${activePayload.contact_endpoint || '-'}
 
- [PARAMETRİK MİMARİ SEÇİMLERİ]
- 1. Sistem İhtiyacı      : ${activePayload.system_need}
- 2. Veri Hacmi & Gecikme : ${activePayload.throughput_scale}
- 3. Donanım Entegrasyonu : ${activePayload.physical_integration}
- 4. Zaman Takvimi        : ${activePayload.timeline_scale}
+[PARAMETRİK MİMARİ SEÇİMLERİ]
+1. Sistem İhtiyacı      : ${activePayload.system_need}
+2. Veri Hacmi & Gecikme : ${activePayload.throughput_scale}
+3. Donanım Entegrasyonu : ${activePayload.physical_integration}
+4. Zaman Takvimi        : ${activePayload.timeline_scale}
 
- [MİMARİ NOTLAR]
- ${activePayload.architectural_notes || '-'}
+[MİMARİ NOTLAR]
+${activePayload.architectural_notes || '-'}
 
- Sistem Durumu: DOĞRULANDI & ARŞİVLENDİ [200 OK]
- ============================================================`;
+Sistem Durumu: DOĞRULANDI & ARŞİVLENDİ [200 OK]
+============================================================`;
     navigator.clipboard.writeText(receiptText);
     setReceiptCopied(true);
     setTimeout(() => setReceiptCopied(false), 2000);
@@ -299,8 +302,6 @@ export default function BriefModule() {
   return (
     <section id="brief-module" className="py-24 bg-[#060709] bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:40px_40px]">
       <div className="max-w-7xl mx-auto px-6 sm:px-8">
-
-        {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-14 pb-8 px-8 pt-14">
           <div>
             <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-zinc-500 mb-2">
@@ -322,14 +323,9 @@ export default function BriefModule() {
           </div>
         </div>
 
-        {/* 2-Column Interface: Left Parametric Form, Right Code Inspector & Live Receipt */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-
-          {/* Left Column: Parametric Selection Matrix */}
           <div className="lg:col-span-7 bg-[#090b0e] p-6 md:p-8">
             <form onSubmit={handleSubmit} className="space-y-8">
-
-              {/* 1. Sistem İhtiyacı */}
               <div>
                 <div className="flex items-center justify-between mb-3">
                   <label className="text-xs font-mono uppercase tracking-wider text-white font-bold flex items-center gap-2">
@@ -361,7 +357,6 @@ export default function BriefModule() {
                 </div>
               </div>
 
-              {/* 2. Veri Hacmi & Gecikme Skalası */}
               <div>
                 <div className="flex items-center justify-between mb-3">
                   <label className="text-xs font-mono uppercase tracking-wider text-white font-bold flex items-center gap-2">
@@ -399,7 +394,6 @@ export default function BriefModule() {
                 </div>
               </div>
 
-              {/* 3. Fiziksel Katman Gereksinimi */}
               <div>
                 <div className="flex items-center justify-between mb-3">
                   <label className="text-xs font-mono uppercase tracking-wider text-white font-bold flex items-center gap-2">
@@ -431,7 +425,6 @@ export default function BriefModule() {
                 </div>
               </div>
 
-              {/* 4. Zaman Takvimi */}
               <div>
                 <div className="flex items-center justify-between mb-3">
                   <label className="text-xs font-mono uppercase tracking-wider text-white font-bold flex items-center gap-2">
@@ -463,7 +456,6 @@ export default function BriefModule() {
                 </div>
               </div>
 
-              {/* 5. Kurum & İletişim Bilgileri */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4">
                 <div>
                   <label className="text-xs font-mono uppercase tracking-wider text-zinc-400 block mb-2">
@@ -495,7 +487,6 @@ export default function BriefModule() {
                 </div>
               </div>
 
-              {/* 6. Mimari Notlar */}
               <div>
                 <label className="text-xs font-mono uppercase tracking-wider text-zinc-400 block mb-2">
                   Mimari Notlar, Kısıtlamalar veya Saha Koşulları
@@ -509,7 +500,6 @@ export default function BriefModule() {
                 />
               </div>
 
-              {/* Submit CTA */}
               <button
                 type="submit"
                 disabled={isSubmitting}
@@ -525,17 +515,11 @@ export default function BriefModule() {
                 )}
                 <span>{isSubmitting ? 'İşleniyor...' : 'Mimari Şartname Fişini Oluştur'}</span>
               </button>
-
             </form>
           </div>
 
-          {/* Right Column: Live Pydantic/FastAPI Code Inspector & Brutalist Commission Receipt */}
           <div className="lg:col-span-5 space-y-6">
-
-            {/* Live Code & Schema Inspector */}
             <div className="bg-[#090b0e] p-6">
-
-              {/* Header with Switchers */}
               <div className="flex items-center justify-between pb-3 mb-4 text-xs font-mono">
                 <div className="flex items-center gap-2">
                   <Terminal className="w-4 h-4 text-amber-400" />
@@ -570,14 +554,12 @@ export default function BriefModule() {
                 </div>
               </div>
 
-              {/* Code Pre Box */}
               <pre className="text-xs font-mono text-zinc-300 overflow-x-auto p-4 bg-[#050608] leading-relaxed max-h-[340px]">
                 {activeCodeTab === 'json' && JSON.stringify(activePayload, null, 2)}
                 {activeCodeTab === 'pydantic' && pydanticSnippet}
                 {activeCodeTab === 'curl' && curlSnippet}
               </pre>
 
-              {/* Quick Code Actions */}
               <div className="mt-4 pt-3 flex items-center justify-between text-xs font-mono">
                 <button
                   onClick={handleCopyCode}
@@ -597,10 +579,7 @@ export default function BriefModule() {
               </div>
             </div>
 
-            {/* Brutalist Architectural Commission Receipt (Generated upon submission or preview) */}
             <div className="bg-[#0b0e14] p-6 md:p-8 font-mono text-xs relative overflow-hidden">
-
-              {/* Receipt Top Stamp */}
               <div className="flex items-center justify-between pb-4 mb-4">
                 <div>
                   <div className="text-[10px] text-[#00FF66] uppercase tracking-widest font-bold">
@@ -616,7 +595,6 @@ export default function BriefModule() {
                 </span>
               </div>
 
-              {/* Receipt Parameters Grid */}
               <div className="space-y-3 text-zinc-300">
                 <div className="flex justify-between pt-2">
                   <span className="text-zinc-500">İSTEMCİ / KURUM:</span>
@@ -650,7 +628,6 @@ export default function BriefModule() {
                 </div>
               </div>
 
-              {/* Cryptographic Signature Footer */}
               <div className="pt-4 mt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-[10px] text-zinc-500">
                 <div>
                   <span>ZAMAN: {activePayload.timestamp.substring(0, 19).replace('T', ' ')} UTC</span>
@@ -676,10 +653,8 @@ export default function BriefModule() {
                   </button>
                 </div>
               </div>
-
             </div>
 
-            {/* Direct Communication Channels */}
             <div className="p-5 bg-[#0a0d14] flex items-center justify-between gap-4 text-xs font-mono">
               <div>
                 <span className="text-white font-bold block mb-0.5">DOĞRUDAN MİMAR İLETİŞİMİ:</span>
@@ -687,18 +662,15 @@ export default function BriefModule() {
               </div>
               <a
                 href={`mailto:hello@private-agency.com?subject=Mimari%20Şartname%20${activePayload.specification_id}&body=${encodeURIComponent(
-                  `Şartname ID: ${activePayload.specification_id}\nİstemci: ${activePayload.client_entity || '-'}\nSistem: ${activePayload.system_need}\nGecikme: ${activePayload.throughput_scale}\nDonanım: ${activePayload.physical_integration}\n`)
-                }`}
+                  `Şartname ID: ${activePayload.specification_id}\nİstemci: ${activePayload.client_entity || '-'}\nSistem: ${activePayload.system_need}\nGecikme: ${activePayload.throughput_scale}\nDonanım: ${activePayload.physical_integration}\n`
+                )}`}
                 className="px-3.5 py-2 bg-white/10 hover:bg-white hover:text-black text-white font-bold transition-none shrink-0"
               >
                 MİMARA İLET ↗
               </a>
             </div>
-
           </div>
-
         </div>
-
       </div>
     </section>
   );
