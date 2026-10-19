@@ -350,6 +350,11 @@ app.post('/api/sliss/chat', async (req, res) => {
       timestamp: new Date().toISOString(),
       core: 'LOCAL_RULE_DISPATCHER',
     });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'SERVER_ERROR' });
+  }
+});
 // System Brief Ingestion & Validation API Endpoint
 app.post('/api/v1/system-brief', (req, res) => {
   try {
@@ -418,7 +423,6 @@ async function startServer() {
     app.use(vite.middlewares);
   } else {
     // Serve static files in production
-    app.use(express.static(path.resolve(__dirname, 'dist')));
     app.get('*', (req, res) => {
       res.sendFile(path.resolve(__dirname, 'dist', 'index.html'));
     });

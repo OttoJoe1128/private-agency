@@ -218,12 +218,29 @@ curl -X POST "https://systems.agency/api/v1/system-brief" \\
   -H "X-Spec-Version: 2026.4" \\
   -d '${JSON.stringify(activePayload, null, 2)}'`;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmittedReceipt({
-      ...currentPayload,
-      timestamp: new Date().toISOString(),
-    });
+    setIsSubmitting(true);
+    sound.playClick();
+    try {
+      const response = await fetch('/api/v1/system-brief', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(currentPayload),
+      });
+      const data = await response.json();
+      if (response.ok) {
+        setSubmittedReceipt({ ...currentPayload, ...data });
+        sound.playSuccess();
+      } else {
+        console.error('Submission failed:', data);
+        sound.playClick();
+      }
+    } catch (err) {
+      console.error('Submission error:', err);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleCopyCode = () => {
@@ -276,11 +293,11 @@ Sistem Durumu: DOĞRULANDI & ARŞİVLENDİ [200 OK]
   };
 
   return (
-    <section id="brief-module" className="py-24 border-b border-white/10 bg-[#060709] architectural-grid select-text">
-      <div className="max-w-7xl mx-auto px-6 sm:px-8">
+    <section id="brief-module" className="py-24 border-y border-zinc-900 bg-[#060709] bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:40px_40px] select-text">
+      <div className="max-w-7xl mx-auto px-6 sm:px-8 border-x border-zinc-900">
         
         {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-14 pb-8 border-b border-white/10">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-14 pb-8 border-b border-zinc-900 px-8 pt-14">
           <div>
             <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-zinc-500 mb-2">
               <span className="text-white font-bold">Analitik Brief &amp; Şartname</span>
@@ -292,7 +309,7 @@ Sistem Durumu: DOĞRULANDI & ARŞİVLENDİ [200 OK]
             </h2>
           </div>
 
-          <div className="max-w-md text-xs font-mono text-zinc-400 bg-[#090b0e] p-4 border border-white/10">
+          <div className="max-w-md text-xs font-mono text-zinc-400 bg-[#090b0e] p-4 border border-zinc-800">
             <div className="flex items-center justify-between mb-1">
               <span className="text-emerald-400 font-bold">Şartname Şeması:</span>
               <span className="text-[10px] text-zinc-500 uppercase">{metrics.level.replace('// ', '')}</span>
@@ -490,11 +507,18 @@ Sistem Durumu: DOĞRULANDI & ARŞİVLENDİ [200 OK]
               {/* Submit CTA */}
               <button
                 type="submit"
-                className="w-full py-4 bg-[#00FF66] text-black font-bold text-xs font-mono uppercase tracking-widest flex items-center justify-center gap-2.5 hover:bg-[#20ff77] transition-all cursor-pointer shadow-[0_0_30px_rgba(0,255,102,0.2)]"
+                disabled={isSubmitting}
+                className={`w-full py-4 bg-[#00FF66] text-black font-bold text-xs font-mono uppercase tracking-widest flex items-center justify-center gap-2.5 transition-all cursor-pointer shadow-[0_0_30px_rgba(0,255,102,0.2)] ${
+                  isSubmitting ? 'opacity-50 cursor-wait' : 'hover:bg-[#20ff77]'
+                }`}
                 data-cursor="GENERATE"
               >
-                <Send className="w-4 h-4 fill-current" />
-                <span>Mimari Şartname Fişini Oluştur</span>
+                {isSubmitting ? (
+                  <RotateCcw className="w-4 h-4 animate-spin" />
+                ) : (
+                  <Send className="w-4 h-4 fill-current" />
+                )}
+                <span>{isSubmitting ? 'İşleniyor...' : 'Mimari Şartname Fişini Oluştur'}</span>
               </button>
 
             </form>

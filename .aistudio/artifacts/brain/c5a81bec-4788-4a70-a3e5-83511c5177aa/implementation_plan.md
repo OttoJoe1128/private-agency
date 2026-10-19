@@ -120,6 +120,6 @@ A comprehensive, phased engineering blueprint to elevate the "Engineering Living
   - Purge any legacy deployment guide module.
   - Finalize `CommandPalette.tsx` with Cmd+K trigger and bottom-right quick indicator.
   - Connect to `/api/sliss/chat` with Gemini 3.8 Flash, deterministic persona, and auto-scrolling terminal execution.
-- [ ] **Step 6: Cyber-Tactile Technical Brief Engine**
+- [x] **Step 6: Cyber-Tactile Technical Brief Engine**
   - Refactor `BriefModule.tsx` to a high-contrast Linear.app aesthetic with hairline grids and neon state glows.
   - Implement dynamic typewriter syntax highlighting for the live `/api/v1/system-brief` JSON payload.

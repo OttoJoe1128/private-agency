@@ -101,8 +101,10 @@ Navigasyon icra edildi: #brief-module`,
   },
 };
 
-export default function CommandPalette({ onNavigate }: CommandPaletteProps) {
-  const [isOpen, setIsOpen] = useState<boolean>(false);
+export default function CommandPalette({ onNavigate, isOpen: propIsOpen, setIsOpen: propSetIsOpen }: CommandPaletteProps & { isOpen?: boolean, setIsOpen?: (o: boolean) => void }) {
+  const [internalIsOpen, setInternalIsOpen] = useState<boolean>(false);
+  const isOpen = propIsOpen !== undefined ? propIsOpen : internalIsOpen;
+  const setIsOpen = propSetIsOpen || setInternalIsOpen;
   const [input, setInput] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
   const [historyIndex, setHistoryIndex] = useState<number>(-1);
@@ -127,7 +129,7 @@ export default function CommandPalette({ onNavigate }: CommandPaletteProps) {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
         e.preventDefault();
         sound.playWarp();
-        setIsOpen((prev) => !prev);
+        setIsOpen(!isOpen);
       } else if (e.key === 'Escape' && isOpen) {
         sound.playClick();
         setIsOpen(false);

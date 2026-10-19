@@ -303,7 +303,7 @@ export default function CaseStudies() {
         const inner = slideInnerRefs.current[idx];
         const viewH = (container.clientHeight || window.innerHeight) - 65;
         const scrollH = inner ? inner.scrollHeight : viewH;
-        const maxScrollY = Math.max(0, scrollH - viewH + 40);
+        const maxScrollY = Math.max(0, scrollH - viewH + 100);
 
         // Phase 1: Vertical scroll of current project to reveal the full 3D device simulator
         if (maxScrollY > 15) {
@@ -541,7 +541,7 @@ export default function CaseStudies() {
               ref={(el) => {
                 slideInnerRefs.current[idx] = el;
               }}
-              className="w-full max-w-7xl mx-auto py-8 sm:py-10 will-change-transform pb-24"
+              className="w-full max-w-7xl mx-auto py-8 sm:py-10 will-change-transform pb-64"
             >
               
               {/* Asymmetric Magazine Layout: Bold Editorial Header */}
