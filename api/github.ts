@@ -5,6 +5,20 @@ export default async function handler(req: any, res: any) {
   }
 
   try {
+    // Simple in-memory ISR cache (3600s)
+    // Stored at module-level so it survives warm lambdas in many serverless environments.
+    // NOTE: This is intentionally lightweight — for stronger caching use Redis or similar.
+    if (!(global as any).__github_cache) {
+      (global as any).__github_cache = { data: null, timestamp: 0 };
+    }
+    const CACHE = (global as any).__github_cache as { data: any; timestamp: number };
+    const CACHE_TTL_MS = 3600 * 1000;
+
+    const now = Date.now();
+    if (CACHE.data && now - CACHE.timestamp < CACHE_TTL_MS) {
+      return res.status(200).json({ ok: true, cached: true, data: CACHE.data });
+    }
+
     const token = process.env.GITHUB_TOKEN;
     const username = process.env.GITHUB_USERNAME || 'OttoJoe1128';
 
@@ -54,15 +68,23 @@ export default async function handler(req: any, res: any) {
     const data = await response.json();
 
     if (!response.ok) {
+      // Sanitize error detail in production
+      const safeDetail = process.env.NODE_ENV === 'production' ? undefined : data;
       return res.status(response.status).json({
-        error: 'GitHub GraphQL request failed',
-        detail: data,
+        error: 'github_graphql_error',
+        status: response.status,
+        detail: safeDetail,
       });
     }
 
-    return res.status(200).json(data);
+    // Cache the useful payload (keep small)
+    const payload = data.data || data;
+    CACHE.data = payload;
+    CACHE.timestamp = Date.now();
+
+    return res.status(200).json({ ok: true, cached: false, data: payload });
   } catch (error: any) {
     console.error('api/github error:', error);
-    return res.status(500).json({ error: error.message || 'Internal Server Error' });
+    return res.status(500).json({ error: 'INTERNAL_SERVER_ERROR' });
   }
 }
