@@ -116,25 +116,7 @@ export default function LivingTopologyCanvas() {
       const h = currentRect.height;
 
       // Dark canvas clear
-      ctx.fillStyle = '#060709';
-      ctx.fillRect(0, 0, w, h);
-
-      // Subtle architectural coordinates grid
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.035)';
-      ctx.lineWidth = 1;
-      const step = 40;
-      for (let x = 0; x < w; x += step) {
-        ctx.beginPath();
-        ctx.moveTo(x, 0);
-        ctx.lineTo(x, h);
-        ctx.stroke();
-      }
-      for (let y = 0; y < h; y += step) {
-        ctx.beginPath();
-        ctx.moveTo(0, y);
-        ctx.lineTo(w, y);
-        ctx.stroke();
-      }
+      ctx.clearRect(0, 0, w, h);
 
       // Update and connect nodes
       const maxDistance = 140;
@@ -174,8 +156,8 @@ export default function LivingTopologyCanvas() {
 
           if (dist < maxDistance) {
             const alpha = 1 - dist / maxDistance;
-            ctx.strokeStyle = `rgba(255, 255, 255, ${alpha * 0.14})`;
-            ctx.lineWidth = 1;
+            ctx.strokeStyle = `rgba(255, 255, 255, ${alpha * 0.07})`;
+            ctx.lineWidth = 0.5;
             ctx.beginPath();
             ctx.moveTo(n.x, n.y);
             ctx.lineTo(n2.x, n2.y);
@@ -204,12 +186,12 @@ export default function LivingTopologyCanvas() {
 
             ctx.fillStyle = '#f59e0b'; // amber engineering signal
             ctx.beginPath();
-            ctx.arc(px, py, 2, 0, Math.PI * 2);
+            ctx.arc(px, py, 1.5, 0, Math.PI * 2);
             ctx.fill();
 
             // Glow trail
-            ctx.strokeStyle = 'rgba(245, 158, 11, 0.4)';
-            ctx.lineWidth = 1.5;
+            ctx.strokeStyle = 'rgba(245, 158, 11, 0.2)';
+            ctx.lineWidth = 1;
             ctx.beginPath();
             ctx.moveTo(px, py);
             ctx.lineTo(px - (end.x - start.x) * 0.05, py - (end.y - start.y) * 0.05);
@@ -224,23 +206,18 @@ export default function LivingTopologyCanvas() {
 
         // Outer telemetry ring
         ctx.strokeStyle = n.type === 'sensor' 
-          ? 'rgba(56, 189, 248, 0.35)' 
-          : 'rgba(255, 255, 255, 0.25)';
-        ctx.lineWidth = 1;
+          ? 'rgba(56, 189, 248, 0.15)' 
+          : 'rgba(255, 255, 255, 0.1)';
+        ctx.lineWidth = 0.5;
         ctx.beginPath();
-        ctx.arc(n.x, n.y, n.radius + 3, 0, Math.PI * 2);
+        ctx.arc(n.x, n.y, n.radius + 2, 0, Math.PI * 2);
         ctx.stroke();
 
         // Node center
-        ctx.fillStyle = n.type === 'sensor' ? '#38bdf8' : '#f8fafc';
+        ctx.fillStyle = n.type === 'sensor' ? 'rgba(56, 189, 248, 0.2)' : 'rgba(255, 255, 255, 0.2)';
         ctx.beginPath();
         ctx.arc(n.x, n.y, n.radius, 0, Math.PI * 2);
         ctx.fill();
-
-        // Technical Monospace Label
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.45)';
-        ctx.font = '9px "JetBrains Mono", monospace';
-        ctx.fillText(n.label, n.x + 8, n.y + 3);
       }
 
       animationFrameId = requestAnimationFrame(render);
@@ -257,17 +234,8 @@ export default function LivingTopologyCanvas() {
   }, []);
 
   return (
-    <div className="relative w-full h-[420px] md:h-[480px] border border-white/10 bg-[#060709] overflow-hidden select-none">
+    <div className="relative w-full h-[420px] md:h-[480px] overflow-hidden select-none">
       <canvas ref={canvasRef} className="w-full h-full block cursor-crosshair" />
-
-      {/* Real-time Technical Overlay */}
-      <div className="absolute top-3 left-3 flex items-center gap-3 text-xs font-mono text-zinc-400">
-        <span>Ağ Düğümleri</span>
-        <span aria-hidden="true">·</span>
-        <span className="tabular-nums">{activeNodesCount} Aktif Düğüm</span>
-        <span aria-hidden="true">·</span>
-        <span className="text-emerald-400 tabular-nums">{fps} FPS</span>
-      </div>
     </div>
   );
 }

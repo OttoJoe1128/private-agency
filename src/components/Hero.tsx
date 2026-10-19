@@ -80,12 +80,8 @@ export default function Hero({ onNavigate }: HeroProps) {
           </div>
 
           {/* Right Column: Architectural Blueprint Canvas Mount */}
-          <div className="lg:col-span-5 flex flex-col justify-start">
-            <div className="relative bg-[#090b0e] p-2">
-              <div className="flex items-center justify-between px-3 py-2 bg-[#060709] text-xs font-mono text-zinc-400 mb-2">
-                <span className="font-medium text-white">Etkileşimli Ağ Topolojisi</span>
-                <span className="text-zinc-500 text-[11px]">Canlı Simülasyon</span>
-              </div>
+          <div className="lg:col-span-5 flex flex-col justify-start [mask-image:radial-gradient(circle_at_center,black_60%,transparent_100%)] [-webkit-mask-image:radial-gradient(circle_at_center,black_60%,transparent_100%)]">
+            <div className="relative">
               <LivingTopologyCanvas />
             </div>
           </div>
