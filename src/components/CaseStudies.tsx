@@ -25,223 +25,9 @@ import {
   Check,
   Copy
 } from 'lucide-react';
+import { CASE_STUDIES } from '../data/caseStudies';
 
 gsap.registerPlugin(ScrollTrigger);
-
-const CASE_STUDIES: CaseStudy[] = [
-  {
-    id: 'nova-system',
-    category: 'Tarım & Endüstriyel IoT',
-    client: 'Nova Agro Systems',
-    title: 'Nova System: RS485 Modbus Toprak Telemetrisi & ESP32 Sürücü Mimarisi',
-    kicker: '01 // NOVA AGRO',
-    timeline: '14 Hafta (Donanım + Arayüz)',
-    problem:
-      'Geniş ölçekli sera alanlarında toprak tuzlanması, kontrolsüz sulama ve yüksek elektromanyetik parazit (EMI) nedeniyle kablosuz sensörlerin sinyal kaybı yaşaması. Standart IoT çiplerinin asit ve neme dayanamaması.',
-    approach:
-      'Kablosuz paket kaybını ortadan kaldırmak için diferansiyel sinyal taşıyan RS485 endüstriyel veri yolu ve Modbus-RTU protokolüne geçildi. ESP-IDF üzerinde FreeRTOS zamanlayıcısıyla deterministik bir C++ Modbus sürücüsü geliştirildi.',
-    systemInstalled:
-      'ESP32 tabanlı master denetleyici, 8 kanallı galvanik izoleli RS485 alıcı-verici, Modbus-RTU register haritası (Toprak Nemi, Sıcaklık, pH, EC iletkenlik), 120Ω sonlandırma dirençleri ve canlı dashboard.',
-    techStack: ['ESP32', 'ESP-IDF C++', 'Modbus-RTU', 'RS485 Half-Duplex', 'FastAPI', 'WebSocket'],
-    metrics: [
-      { label: 'Ölçüm Güvenilirliği', value: '%99.98' },
-      { label: 'Su & Gübre Tasarrufu', value: '%34' },
-      { label: 'Veri Yolu Menzili', value: '1.2 km' },
-      { label: 'Sensör Okuma Periyodu', value: '250 ms' },
-    ],
-    accentColor: '#FF4500',
-    deepDive: {
-      summary: '1.2 km mesafede diferansiyel gerilim (|VA - VB| >= 200mV) ile çalışan, parazit bağışıklı endüstriyel tarım otomasyon mimarisi.',
-      keyDeliverables: [
-        'ESP32 WROOM-32E tabanlı galvanik izoleli RS485 master anakart tasarımı',
-        'ESP-IDF C++ FreeRTOS deterministik Modbus-RTU okuma/yazma sürücüsü',
-        'Toprak Nemi, Sıcaklık, pH ve EC (Elektriksel İletkenlik) register haritası',
-        '120Ω hat sonlandırma dirençleri ve CRC16 paket hata doğrulama döngüsü',
-        'FastAPI & WebSocket tabanlı gerçek zamanlı telemetri izleme ve pompa kontrol paneli',
-      ],
-      technicalArchitecture: [
-        'Fiziksel Katman: RS485 Diferansiyel İletim (A/B Hatları, Twisted Pair, Ekranlı Kablo)',
-        'Protokol: Modbus-RTU Master-Slave (Baudrate: 9600, Data Bits: 8, Parity: None, Stop: 1)',
-        'Gömülü Yazılım: ESP-IDF v5.3, FreeRTOS Preemptive Multitasking, Hardware Timer ISR',
-        'Bulut Köprüsü: MQTT over TLS ile yerel gatewayden FastAPI arka plan servisine telemetri aktarımı',
-      ],
-      terminalLogs: [
-        '[BOOT] ESP32-WROOM-32E initialized @ 240MHz',
-        '[UART2] Configured for RS485 HALF-DUPLEX mode (TX:17, RX:16, RTS:4)',
-        '[MODBUS] Polling Slave 0x01 (Soil Probe A) ... ACK received (8 bytes)',
-        '[CRC16] Frame verified: 0x44 0x09 (Match OK)',
-        '[SENSORS] Moisture: 38.4% | Temp: 21.8°C | pH: 6.42 | EC: 1.18 mS/cm',
-        '[RELAY] Solenoid Valve #03 status: LATCHED_OPEN (Duty: 100%)',
-      ],
-      hardwareOrProtocolSpecs: [
-        { label: 'Mikrodenetleyici', value: 'ESP32 Dual-Core Xtensa LX6 @ 240MHz' },
-        { label: 'RS485 Alıcı-Verici', value: 'MAX13487E (Otomatik Yön Kontrollü, 15kV ESD)' },
-        { label: 'İzolasyon', value: 'Optokuplörlü 2500Vrms Galvanik Ayrım' },
-        { label: 'Bus Empedansı', value: '120Ω Diferansiyel Hat Sonlandırma' },
-        { label: 'Protokol Standardı', value: 'Modbus-RTU over RS485' },
-      ],
-    },
-  },
-  {
-    id: 'lensai-sudokumap',
-    category: 'Yüksek Performanslı Dağıtık Web',
-    client: 'LensAI Global',
-    title: 'LensAI & SudokuMap: Dağıtık Matris Ayrıştırma & Canlı Firebase Leaderboard',
-    kicker: '02 // LENSAI ENGINE',
-    timeline: '8 Hafta',
-    problem:
-      'Görüntü tabanlı 9x9 matris çözümlerinde istemci cihazların işlemci darboğazına girmesi, karmaşık geri izleme (backtracking) algoritmalarının UI tepkiselliğini dondurması ve eşzamanlı binlerce oyuncunun anlık skor senkronizasyonunda veritabanı kilitlenmesi.',
-    approach:
-      'Hesaplama yükünü asenkron FastAPI mikroservisine devreden boru hattı kuruldu. Matris kısıtları bit-masking optimizasyonuyla C-seviyesi hızda çözüldü. Canlı skorlar için Firebase Firestore dağıtık liderlik mimarisi entegre edildi.',
-    systemInstalled:
-      'Pydantic doğrulamalı FastAPI REST & WebSocket uç noktası, tensör matris doğrulama servisi, Firebase distributed transaction tabanlı anlık skor tablosu ve 60 FPS Canvas oyun ızgarası.',
-    techStack: ['FastAPI', 'Python 3.12', 'Firebase', 'PostgreSQL', 'WebSockets', 'React 19'],
-    metrics: [
-      { label: 'Algoritma Çözüm Süresi', value: '1.8 ms' },
-      { label: 'API Uçtan Uca Gecikme', value: '12 ms' },
-      { label: 'Eşzamanlı Oyuncu', value: '50,000+' },
-      { label: 'CPU Kullanım Düşüşü', value: '%68' },
-    ],
-    accentColor: '#38bdf8',
-    deepDive: {
-      summary: 'Bit-masking kısıt yayılımı (constraint propagation) ve Firebase dağıtık transaction yapısıyla 50k+ eşzamanlı oyuncuyu milisaniyelik gecikmeyle yöneten rekabetçi bulut oyun omurgası.',
-      keyDeliverables: [
-        'Asenkron Python 3.12 & FastAPI matris çözüm motoru (Bitwise Backtracking)',
-        'Pydantic v2 ile girdi doğrulama ve < 2ms çözüm garantisi',
-        'Firebase Firestore atomik batch write ve distributed counter mimarisi',
-        'İstemci tarafında Web Worker destekli Canvas ızgara görselleştirmesi',
-        'Yüksek eşzamanlı WebSocket bağlantıları için Redis pub/sub katmanı',
-      ],
-      technicalArchitecture: [
-        'Algoritma: 9x9 Matris Bit-masking (Satır, Sütun ve 3x3 Blok için 9-bit register)',
-        'Arka Plan: FastAPI (Uvicorn + uvloop), Asenkron Coroutine Havuzu (Worker Pool: 16)',
-        'Veritabanı & Dağıtım: Cloud Firestore + Cloud MemoryStore (Redis)',
-        'Ön Yüz: HTML5 Canvas 60 FPS Render + WebSocket Çift Yönlü Skor Akışı',
-      ],
-      terminalLogs: [
-        '[SERVER] FastAPI worker pool active (16 workers on uvloop)',
-        '[SOLVER] Matrix input received: 48 clues given (Difficulty: MASTER)',
-        '[BITMASK] Initial candidates propagated: 122 bitwise operations',
-        '[SEARCH] Backtracking search initiated (Max Depth: 33)',
-        '[BENCHMARK] Matrix solved in 1.821 ms (0 branch regressions)',
-        '[FIREBASE] Distributed transaction committed: Leaderboard rank #14 updated',
-      ],
-      hardwareOrProtocolSpecs: [
-        { label: 'Matris Çözüm Süresi', value: 'P99: 1.82 ms / P50: 0.94 ms' },
-        { label: 'Bitwise Operasyon Sayısı', value: '~140 operasyon / çözüm' },
-        { label: 'Asenkron İş Parçacığı', value: 'uvloop event loop' },
-        { label: 'WebSocket Eşzamanlılık', value: '50,000+ aktif soket' },
-        { label: 'Veritabanı Yazma Gecikmesi', value: '< 15 ms (Firebase Atomik)' },
-      ],
-    },
-  },
-  {
-    id: 'brook-resort',
-    category: 'Mekansal & Operasyonel Tasarım',
-    client: 'Brook Mountain Resort',
-    title: 'Brook Resort: 120 Dönüm Tesis Mimarisi & SOP Standartlaştırma Motoru',
-    kicker: '03 // BROOK SPATIAL',
-    timeline: '12 Hafta',
-    problem:
-      'Doğal vadi arazisinde dağınık 42 villa, spa merkezi ve açık rekreasyon ünitelerinde personel hareketlerinin plansız olması, oda servisi sürelerinin 45 dakikayı aşması ve departmanlar arası operasyonel el sıkışma standartlarının eksikliği.',
-    approach:
-      'Mekansal akış ısı haritaları çıkartılarak lojistik sirkülasyon hatları yeniden düzenlendi. Tüm servis ve karşılama süreçleri dijital SOP (Standard Operating Procedure) kurallarına dönüştürülerek personelin adım adım izleyebileceği interaktif görev matrisine bağlandı.',
-    systemInstalled:
-      '6 bölgeye ayrılmış mekansal harita ve sirkülasyon rotalama planı, dijital SOP denetim paneli, oda servis süresi takip sistemi ve yöneticiler için gerçek zamanlı operasyonel verimlilik konsolu.',
-    techStack: ['Spatial Topology', 'SOP Matrix', 'Next.js App', 'PostgreSQL', 'Figma Blueprint'],
-    metrics: [
-      { label: 'Servis Süresi Düşüşü', value: '-22 dk' },
-      { label: 'Personel Verimliliği', value: '+%42' },
-      { label: 'Müşteri Memnuniyeti', value: '4.9 / 5.0' },
-      { label: 'SOP Uyumluluk Oranı', value: '%97.4' },
-    ],
-    accentColor: '#10b981',
-    deepDive: {
-      summary: '120 dönümlük doğal vadi arazisinde personel trafiğini ve servis darboğazlarını matematiksel topoloji analiziyle çözen, SOP motorlu mekansal operasyon sistemi.',
-      keyDeliverables: [
-        '120 dönüm arazi üzerinde 6 ana bölge (Zone 01-06) topolojik sirkülasyon haritası',
-        'Dijital SOP (Standard Operating Procedure) motoru ve tablet görev matrisi',
-        'Mutfak lojistik merkezinden villalara golf arabası rotalama optimizasyonu',
-        'Oda servisi sipariş-teslimat süresini 45 dakikadan 23 dakikaya düşüren kuyruk mimarisi',
-        'Canlı servis ısı haritası ve operasyonel gecikme alarm sistemi',
-      ],
-      technicalArchitecture: [
-        'Topolojik Analiz: Dijkstra & A* ağırlıklı mesafe matrisi (Eğim ve yol yüzeyi faktörlü)',
-        'SOP Kural Motoru: Durum makineleri (State Machines: Pending -> Prep -> En Route -> Delivered)',
-        'Veri Modeli: PostgreSQL 16 + PostGIS mekansal indeksleme',
-        'Ön Yüz: Mobil tabletler için hafif PWA, anlık durum güncellemeleri',
-      ],
-      terminalLogs: [
-        '[DISPATCH] Order #892 received from Villa 14 (Zone 01: North Ridge)',
-        '[ROUTER] Optimal transit path computed: Kitchen Hub -> Spine Trail B -> Ridge Loop',
-        '[ESTIMATE] Distance: 480m | Grade: +8% | Estimated Transit: 4.2 mins',
-        '[SOP-04] Service staff member dispatched: Team 02 (Electric Cart #4)',
-        '[TELEMETRY] Checkpoint passed: Valley Bridge (Timestamp: 14:22:18)',
-        '[COMPLETE] Delivery confirmed: Elapsed 18.4 mins (SOP Target: < 25 mins) [OK]',
-      ],
-      hardwareOrProtocolSpecs: [
-        { label: 'Toplam Tesis Alanı', value: '120 Dönüm (485,000 m²)' },
-        { label: 'Toplam Konaklama Ünitesi', value: '42 Villa + 8 Özel Süit' },
-        { label: 'Maksimum Lojistik Mesafe', value: '1.4 km (Mutfak - Zirve Villa)' },
-        { label: 'Ortalama Servis Süresi', value: '23 Dakika (Önce: 45 dk)' },
-        { label: 'SOP Kural Sayısı', value: '64 Aktif Dijital Protokol' },
-      ],
-    },
-  },
-  {
-    id: 'flight-sim',
-    category: 'Avangart Web & 3D Spatial',
-    client: 'Derin Demirkaya',
-    title: 'Derin Demirkaya: Web Worker & OffscreenCanvas 3D Uçuş Simülatörü',
-    kicker: '04 // FLIGHT 3D',
-    timeline: '6 Hafta',
-    problem:
-      'Ağır 3D simülasyon ve drone aerodinamik hesaplamalarının tarayıcı ana iş parçacığında çalışarak web sayfasında karesel atlamalara (INP düşüşü, jank) ve kullanıcı etkileşiminde gecikmelere sebep olması.',
-    approach:
-      'Tüm Three.js render döngüsü ve aerodinamik simülasyon mantığı `OffscreenCanvas` ve Web Workers üzerine taşındı. Ana DOM iş parçacığı yalnızca minimal girdi transferi yaparak 60 FPS sabit akıcılık sağlandı.',
-    systemInstalled:
-      'WebGL / Three.js 6 eksenli drone simülasyonu, irtifa ve açı telemetri göstergeleri, dinamik tel çerçeve/katı model dönüştürücüsü ve karesel atlamasız mimari.',
-    techStack: ['Three.js', 'WebGL', 'OffscreenCanvas', 'Web Workers', 'GSAP', 'TypeScript'],
-    metrics: [
-      { label: 'Sabit Render Hızı', value: '60 FPS' },
-      { label: 'Main Thread Yükü', value: '< %4' },
-      { label: 'Input Latency', value: '4.2 ms' },
-      { label: 'Buffer Hafıza Boyutu', value: '18 MB' },
-    ],
-    accentColor: '#a855f7',
-    deepDive: {
-      summary: 'OffscreenCanvas ve Web Worker thread izolasyonu ile sıfır jank garantisi sunan, 6-eksenli 3D drone uçuş telemetri simülasyonu.',
-      keyDeliverables: [
-        'Web Worker içinde çalışan izole Three.js & Canvas render döngüsü',
-        'Pitch, roll, yaw ve irtifa açılarını işleyen 6-DOF aerodinamik fizik modeli',
-        'Sayfa scroll hızına duyarlı (timeline scrubbed) dinamik kamera açısı süzülmesi',
-        'Dinamik tel çerçeve (wireframe) ve katı gövde (solid mesh) matris dönüştürücüsü',
-        'Main thread CPU kullanımını %4 altına indiren transferControlToOffscreen boru hattı',
-      ],
-      technicalArchitecture: [
-        'İş Parçacığı Ayrımı: Main Thread (UI Events & DOM) <-> Dedicated Worker (Render & Physics)',
-        'Mesajlaşma Protokolü: Yapılandırılmış Klonlama (Structured Clone / SharedArrayBuffer)',
-        '3D Motor: Three.js r162 BufferGeometry & Catmull-Rom Trajectory Curves',
-        'GPU Fallback: WebGL devre dışı olduğunda 2D Canvas perspektif projeksiyonu',
-      ],
-      terminalLogs: [
-        '[WORKER] Dedicated Web Worker spawned on isolated thread',
-        '[CANVAS] Control transferred to OffscreenCanvas (500x320 @ 2x DPR)',
-        '[PHYSICS] 6-DOF rigid body model initialized (Mass: 1.2kg, Thrust/Weight: 2.4)',
-        '[TICKER] 60 FPS stable (Frametime: 16.6ms | Main thread jank: 0ms)',
-        '[SCRUB] Scroll velocity scrub registered: Tilt delta applied smoothly',
-        '[STATUS] Flight attitude nominal (Altitude: 140m | Pitch: 0° | Roll: 0°)',
-      ],
-      hardwareOrProtocolSpecs: [
-        { label: 'Render Kare Hızı', value: '60 FPS Sabit (0 Frame Drop)' },
-        { label: 'Main Thread Engelleme', value: '0 ms (Tamamen Arka Plan Worker)' },
-        { label: 'Fizik Güncelleme Hızı', value: '120 Hz İç Döngü' },
-        { label: 'Bellek Ayak İzi', value: '< 20 MB Heap Kullanımı' },
-        { label: 'Giriş Gecikmesi', value: '< 4.5 ms' },
-      ],
-    },
-  },
-];
 
 export default function CaseStudies() {
   const [activeProjectIndex, setActiveProjectIndex] = useState<number>(0);
@@ -568,7 +354,7 @@ export default function CaseStudies() {
                     {/* Clip-Path Expansion Trigger Button */}
                     <button
                       onClick={() => setDeepDiveProject(project)}
-                      className="inline-flex items-center gap-2 px-4 py-2.5 bg-[#14171f] hover:bg-[#1a202c] border border-white/20 hover:border-white text-xs font-mono text-white font-bold transition-all cursor-pointer group"
+                      className="inline-flex items-center gap-2 px-4 py-2.5 bg-[#14171f] hover:bg-[#1a202c] border border-white/20 hover:border-white text-xs font-mono text-white font-bold transi[...]
                       data-cursor="INSPECT"
                     >
                       <Maximize2 className="w-3.5 h-3.5 text-[#00FF66] group-hover:scale-110 transition-transform" />
@@ -727,13 +513,11 @@ export default function CaseStudies() {
 
                       <div className="p-4 text-xs">
                         {novaTab === 'driver' && (
-                          <pre className="text-zinc-300 overflow-x-auto p-3 bg-[#050608] border border-white/5 leading-relaxed">
-{`ESP_ERROR_CHECK(uart_set_mode(UART_NUM_2, UART_MODE_RS485_HALF_DUPLEX));
+                          <pre className="text-zinc-300 overflow-x-auto p-3 bg-[#050608] border border-white/5 leading-relaxed">{`ESP_ERROR_CHECK(uart_set_mode(UART_NUM_2, UART_MODE_RS485_HALF_DUPLEX));
 ESP_ERROR_CHECK(uart_set_pin(UART_NUM_2, 17, 16, 4, UART_PIN_NO_CHANGE));
 // 120Ω sonlandırma dirençleri ile 1.2km diferansiyel hat iletimi
 uint8_t request_frame[] = { 0x01, 0x03, 0x00, 0x00, 0x00, 0x04, 0x44, 0x09 };
-uart_write_bytes(UART_NUM_2, (const char*)request_frame, sizeof(request_frame));`}
-                          </pre>
+uart_write_bytes(UART_NUM_2, (const char*)request_frame, sizeof(request_frame));`}</pre>
                         )}
 
                         {novaTab === 'crc16' && (
