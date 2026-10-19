@@ -66,7 +66,7 @@ export default function Footer({ onNavigate }: FooterProps) {
             © {new Date().getFullYear()} Engineering Living Systems. Tüm hakları saklıdır.
           </div>
           <div className="flex items-center gap-2">
-            <span>Awwwards Standard Editorial Architecture</span>
+            <span>Editorial architecture</span>
             <span aria-hidden="true">·</span>
             <span>Bare-metal &amp; Deterministic</span>
           </div>
