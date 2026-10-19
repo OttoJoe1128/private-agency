@@ -733,7 +733,7 @@ export default function SpatialTunnel() {
     <section
       id="capabilities"
       ref={containerRef}
-      className="relative w-full h-screen bg-[#070709] border-b border-white/10 overflow-hidden select-none"
+      className="relative w-full h-screen bg-[#070709] overflow-hidden select-none"
     >
       {/* 3D R3F Canvas / Resilient 2D Fallback */}
       <div className="absolute inset-0 z-0">
@@ -785,7 +785,7 @@ export default function SpatialTunnel() {
       </div>
 
       {/* Top Telemetry & Station Switcher (Clean, Zero-Pill Architecture) */}
-      <div className="relative z-20 w-full bg-[#070709]/85 backdrop-blur-md border-b border-white/10 px-6 py-4 flex flex-wrap items-center justify-between gap-4 text-xs font-mono">
+      <div className="relative z-20 w-full bg-[#070709]/85 backdrop-blur-md px-6 py-4 flex flex-wrap items-center justify-between gap-4 text-xs font-mono">
         <div className="flex items-center gap-3">
           <span
             className="w-2.5 h-2.5 transition-colors duration-300"
@@ -831,10 +831,10 @@ export default function SpatialTunnel() {
               key={cap.id}
               onClick={() => jumpToStage(idx)}
               onMouseEnter={() => sound.playHover()}
-              className={`px-3 py-1.5 border text-xs font-mono cursor-pointer flex items-center gap-1.5 transition-all duration-200 ${
+              className={`px-3 py-1.5 text-xs font-mono cursor-pointer flex items-center gap-1.5 transition-all duration-200 ${
                 activeStage === idx
                   ? 'text-black font-bold shadow-[0_0_15px_rgba(255,255,255,0.15)]'
-                  : 'border-white/10 text-zinc-400 hover:text-white hover:border-white/30 bg-black/40'
+                  : 'text-zinc-400 hover:text-white bg-black/40'
               }`}
               style={{
                 borderColor: activeStage === idx ? STATIONS[idx].color : undefined,
@@ -850,12 +850,12 @@ export default function SpatialTunnel() {
 
       {/* Sweet Spot Status Banner in Mobile/Subtle Footer */}
       <div className="absolute bottom-6 left-6 right-6 z-20 pointer-events-none flex items-center justify-between gap-4 text-xs font-mono">
-        <div className="flex items-center gap-2.5 text-zinc-400 bg-black/70 px-4 py-2 border border-white/10 backdrop-blur-sm">
+        <div className="flex items-center gap-2.5 text-zinc-400 bg-black/70 px-4 py-2 backdrop-blur-sm">
           <ChevronDown className="w-4 h-4 text-emerald-400 animate-bounce" />
           <span>Kaydırmaya devam ederek harflerin arasından geçin</span>
         </div>
 
-        <div className="hidden sm:flex items-center gap-2 text-zinc-400 bg-black/70 px-4 py-2 border border-white/10 backdrop-blur-sm">
+        <div className="hidden sm:flex items-center gap-2 text-zinc-400 bg-black/70 px-4 py-2 backdrop-blur-sm">
           <span className="text-zinc-500">Mevcut İstasyon:</span>
           <span className="text-white font-bold">{CAPABILITIES[activeStage].title}</span>
           <ArrowRight className="w-3.5 h-3.5 text-emerald-400 ml-1" />

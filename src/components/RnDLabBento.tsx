@@ -244,7 +244,7 @@ export default function RnDLabBento() {
 
   return (
     <div className="w-full mt-10">
-      <div className="flex items-center justify-between mb-6 pb-3 border-b border-white/10">
+      <div className="flex items-center justify-between mb-6 pb-3">
         <div>
           <h3 className="text-xl md:text-2xl font-bold text-white tracking-tight font-display">
             R&amp;D Mühendislik Laboratuvarı &amp; Donanım Bento
@@ -258,9 +258,9 @@ export default function RnDLabBento() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
         
         {/* Tile 1: 3D ESP32 Interactive Microcontroller Model (Span 5) */}
-        <div className="lg:col-span-5 bg-[#080b10] border border-white/10 p-5 flex flex-col justify-between">
+        <div className="lg:col-span-5 bg-[#080b10] p-5 flex flex-col justify-between">
           <div>
-            <div className="flex items-center justify-between pb-3 border-b border-white/10 mb-4">
+            <div className="flex items-center justify-between pb-3 mb-4">
               <div className="flex items-center gap-2 text-xs font-mono text-zinc-300">
                 <Cpu className="w-4 h-4 text-emerald-400" />
                 <span className="font-bold text-white">ESP32-WROOM-32E Modeli</span>
@@ -273,7 +273,7 @@ export default function RnDLabBento() {
             </p>
           </div>
 
-          <div className="w-full h-[240px] bg-[#05070a] border border-white/5 relative overflow-hidden">
+          <div className="w-full h-[240px] bg-[#05070a] relative overflow-hidden">
             {canUseWebGL ? (
               <SafeWebGLBoundary fallback={<ESP32SchematicFallback />}>
                 <Canvas camera={{ position: [0, 4, 7], fov: 45 }}>
@@ -294,9 +294,9 @@ export default function RnDLabBento() {
         </div>
 
         {/* Tile 2: Mouse-Interactive Particle Simulation (Span 4) */}
-        <div className="lg:col-span-4 bg-[#080b10] border border-white/10 p-5 flex flex-col justify-between">
+        <div className="lg:col-span-4 bg-[#080b10] p-5 flex flex-col justify-between">
           <div>
-            <div className="flex items-center justify-between pb-3 border-b border-white/10 mb-4">
+            <div className="flex items-center justify-between pb-3 mb-4">
               <div className="flex items-center gap-2 text-xs font-mono text-zinc-300">
                 <Sparkles className="w-4 h-4 text-sky-400" />
                 <span className="font-bold text-white">Etkileşimli Parçacık Simülasyonu</span>
@@ -308,7 +308,7 @@ export default function RnDLabBento() {
             </p>
           </div>
 
-          <div className="w-full h-[240px] bg-[#05070a] border border-white/5 relative overflow-hidden">
+          <div className="w-full h-[240px] bg-[#05070a] relative overflow-hidden">
             <ParticlePhysicsCanvas />
             <div className="absolute bottom-2 left-2 text-[10px] font-mono text-zinc-500 pointer-events-none">
               İmleci hareket ettirerek itme kuvveti uygulayın
@@ -317,9 +317,9 @@ export default function RnDLabBento() {
         </div>
 
         {/* Tile 3: Live Topology & Register Monitoring Strip (Span 3) */}
-        <div className="lg:col-span-3 bg-[#080b10] border border-white/10 p-5 flex flex-col justify-between font-mono text-xs">
+        <div className="lg:col-span-3 bg-[#080b10] p-5 flex flex-col justify-between font-mono text-xs">
           <div>
-            <div className="flex items-center justify-between pb-3 border-b border-white/10 mb-4">
+            <div className="flex items-center justify-between pb-3 mb-4">
               <div className="flex items-center gap-2 text-zinc-300">
                 <Share2 className="w-4 h-4 text-amber-400" />
                 <span className="font-bold text-white">Düğüm Topolojisi</span>
@@ -328,24 +328,24 @@ export default function RnDLabBento() {
             </div>
 
             <div className="space-y-3 mb-6">
-              <div className="p-3 bg-[#05070a] border border-white/10">
+              <div className="p-3 bg-[#05070a]">
                 <span className="text-zinc-500 text-[10px] block mb-0.5">TOPLAM PAKET SAYACI</span>
                 <span className="text-white text-base font-bold tabular-nums">
                   {pulseCount.toLocaleString()} pkt
                 </span>
               </div>
-              <div className="p-3 bg-[#05070a] border border-white/10">
+              <div className="p-3 bg-[#05070a]">
                 <span className="text-zinc-500 text-[10px] block mb-0.5">RS485 İLETİM HATTI</span>
                 <span className="text-emerald-400 font-bold">120Ω Sonlandırma / 9600 Baud</span>
               </div>
-              <div className="p-3 bg-[#05070a] border border-white/10">
+              <div className="p-3 bg-[#05070a]">
                 <span className="text-zinc-500 text-[10px] block mb-0.5">CPU ÇEKİRDEK GÖREVİ</span>
                 <span className="text-sky-400 font-bold">Core 0: Network / Core 1: ISR</span>
               </div>
             </div>
           </div>
 
-          <div className="pt-3 border-t border-white/10 flex items-center justify-between text-zinc-400 text-[11px]">
+          <div className="pt-3 flex items-center justify-between text-zinc-400 text-[11px]">
             <span>Protokol: Modbus-RTU</span>
             <span className="text-white font-bold">CRC16 OK</span>
           </div>

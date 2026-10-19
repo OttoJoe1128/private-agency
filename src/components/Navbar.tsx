@@ -25,7 +25,7 @@ export default function Navbar({ onNavigate }: NavbarProps) {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-[#0D0D0D]/90 backdrop-blur-md border-b border-white/10 transition-colors">
+    <header className="sticky top-0 z-50 w-full bg-[#0D0D0D]/90 backdrop-blur-md transition-colors">
       <div className="max-w-7xl mx-auto flex items-center justify-between gap-8 px-6 py-4">
         
         {/* Zone 1: Single text element wordmark with industrial orange accent */}
@@ -84,10 +84,10 @@ export default function Navbar({ onNavigate }: NavbarProps) {
           {/* Cyber-Tactile Web Audio Toggle */}
           <button
             onClick={toggleSound}
-            className={`p-2 border text-xs font-mono transition-none cursor-pointer flex items-center gap-1.5 ${
+            className={`p-2 text-xs font-mono transition-none cursor-pointer flex items-center gap-1.5 ${
               !isMuted
-                ? 'border-emerald-500/40 bg-emerald-950/20 text-emerald-400'
-                : 'border-white/10 text-zinc-500 hover:text-white hover:border-white/20'
+                ? 'bg-emerald-950/20 text-emerald-400'
+                : 'text-zinc-500 hover:text-white'
             }`}
             title={!isMuted ? 'Sesi Kapat' : 'Sesi Aç'}
             data-cursor="AUDIO"

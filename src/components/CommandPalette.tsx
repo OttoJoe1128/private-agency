@@ -333,13 +333,13 @@ export default function CommandPalette({ onNavigate, isOpen: propIsOpen, setIsOp
           setIsOpen(true);
         }}
         onMouseEnter={() => sound.playHover()}
-        className="fixed bottom-6 right-6 z-40 bg-[#090b0e]/92 hover:bg-[#121620] border border-white/20 hover:border-[#00FF66]/60 backdrop-blur-md px-4 py-2.5 text-xs font-mono text-zinc-300 hover:text-white flex items-center gap-3 shadow-[0_12px_36px_rgba(0,0,0,0.85)] transition-all cursor-pointer group"
+        className="fixed bottom-6 right-6 z-40 bg-[#090b0e]/92 hover:bg-[#121620] backdrop-blur-md px-4 py-2.5 text-xs font-mono text-zinc-300 hover:text-white flex items-center gap-3 shadow-[0_12px_36px_rgba(0,0,0,0.85)] transition-all cursor-pointer group"
         data-cursor="SLISS"
       >
         <span className="w-2 h-2 rounded-full bg-[#00FF66] animate-pulse" />
         <Terminal className="w-4 h-4 text-[#00FF66]" />
         <span className="font-bold text-white tracking-wider">SLISS Terminal</span>
-        <span className="text-[10px] text-zinc-500 font-normal border border-white/10 px-1.5 py-0.5 group-hover:border-white/30">
+        <span className="text-[10px] text-zinc-500 font-normal px-1.5 py-0.5">
           ⌘K
         </span>
       </button>
@@ -356,15 +356,15 @@ export default function CommandPalette({ onNavigate, isOpen: propIsOpen, setIsOp
             }}
           />
 
-          <div className="relative w-full max-w-2xl bg-[#090b0e]/98 border border-white/20 shadow-[0_0_60px_rgba(0,255,102,0.08)] flex flex-col max-h-[88vh] overflow-hidden text-xs font-mono z-10">
+          <div className="relative w-full max-w-2xl bg-[#090b0e]/98 shadow-[0_0_60px_rgba(0,255,102,0.08)] flex flex-col max-h-[88vh] overflow-hidden text-xs font-mono z-10">
             {/* Header: Terminal Bar */}
-            <div className="flex items-center justify-between px-5 py-3.5 bg-[#050608] border-b border-white/10">
+            <div className="flex items-center justify-between px-5 py-3.5 bg-[#050608]">
               <div className="flex items-center gap-2.5 text-zinc-400">
                 <span className="w-2 h-2 rounded-full bg-[#00FF66]" />
                 <Terminal className="w-3.5 h-3.5 text-[#00FF66]" />
                 <span className="text-white font-bold tracking-wider">SLISS AI Terminal</span>
                 <span className="text-zinc-600">·</span>
-                <span className="text-[10px] text-zinc-400 bg-white/5 px-2 py-0.5 border border-white/10">
+                <span className="text-[10px] text-zinc-400 bg-white/5 px-2 py-0.5">
                   Gemini 3.8 Flash
                 </span>
               </div>
@@ -383,38 +383,38 @@ export default function CommandPalette({ onNavigate, isOpen: propIsOpen, setIsOp
             </div>
 
             {/* Quick Action Suggestion Chips (Commands & Jumps) */}
-            <div className="px-5 py-2.5 bg-[#06080b] border-b border-white/10 flex flex-wrap items-center gap-2">
+            <div className="px-5 py-2.5 bg-[#06080b] flex flex-wrap items-center gap-2">
               <button
                 onClick={() => handleSend('/help')}
-                className="px-2.5 py-1 bg-white/5 hover:bg-white/15 border border-white/10 text-[11px] text-zinc-300 hover:text-white flex items-center gap-1.5 cursor-pointer transition-none"
+                className="px-2.5 py-1 bg-white/5 hover:bg-white/15 text-[11px] text-zinc-300 hover:text-white flex items-center gap-1.5 cursor-pointer transition-none"
               >
                 <HelpCircle className="w-3 h-3 text-[#38bdf8]" />
                 <span>/help</span>
               </button>
               <button
                 onClick={() => handleSend('/projects')}
-                className="px-2.5 py-1 bg-white/5 hover:bg-white/15 border border-white/10 text-[11px] text-zinc-300 hover:text-white flex items-center gap-1.5 cursor-pointer transition-none"
+                className="px-2.5 py-1 bg-white/5 hover:bg-white/15 text-[11px] text-zinc-300 hover:text-white flex items-center gap-1.5 cursor-pointer transition-none"
               >
                 <Cpu className="w-3 h-3 text-[#FF4500]" />
                 <span>/projects</span>
               </button>
               <button
                 onClick={() => handleSend('/telemetry')}
-                className="px-2.5 py-1 bg-white/5 hover:bg-white/15 border border-white/10 text-[11px] text-zinc-300 hover:text-white flex items-center gap-1.5 cursor-pointer transition-none"
+                className="px-2.5 py-1 bg-white/5 hover:bg-white/15 text-[11px] text-zinc-300 hover:text-white flex items-center gap-1.5 cursor-pointer transition-none"
               >
                 <FolderGit2 className="w-3 h-3 text-emerald-400" />
                 <span>/telemetry</span>
               </button>
               <button
                 onClick={() => handleSend('/brief')}
-                className="px-2.5 py-1 bg-white/5 hover:bg-white/15 border border-white/10 text-[11px] text-zinc-300 hover:text-white flex items-center gap-1.5 cursor-pointer transition-none"
+                className="px-2.5 py-1 bg-white/5 hover:bg-white/15 text-[11px] text-zinc-300 hover:text-white flex items-center gap-1.5 cursor-pointer transition-none"
               >
                 <Sparkles className="w-3 h-3 text-[#00FF66]" />
                 <span>/brief</span>
               </button>
               <button
                 onClick={() => handleSend('/clear')}
-                className="px-2.5 py-1 bg-white/5 hover:bg-white/15 border border-white/10 text-[11px] text-zinc-400 hover:text-white flex items-center gap-1.5 cursor-pointer ml-auto transition-none"
+                className="px-2.5 py-1 bg-white/5 hover:bg-white/15 text-[11px] text-zinc-400 hover:text-white flex items-center gap-1.5 cursor-pointer ml-auto transition-none"
               >
                 <Trash2 className="w-3 h-3 text-zinc-500" />
                 <span>/clear</span>
@@ -462,7 +462,7 @@ export default function CommandPalette({ onNavigate, isOpen: propIsOpen, setIsOp
                             onNavigate(msg.navTarget!);
                             setIsOpen(false);
                           }}
-                          className="px-2.5 py-1 bg-[#00FF66]/20 border border-[#00FF66]/50 text-[#00FF66] hover:bg-[#00FF66]/30 flex items-center gap-1.5 cursor-pointer font-bold"
+                          className="px-2.5 py-1 bg-[#00FF66]/20 text-[#00FF66] hover:bg-[#00FF66]/30 flex items-center gap-1.5 cursor-pointer font-bold"
                         >
                           <span>BÖLÜME GİT</span>
                           <ArrowUpRight className="w-3.5 h-3.5" />
@@ -489,7 +489,7 @@ export default function CommandPalette({ onNavigate, isOpen: propIsOpen, setIsOp
                 e.preventDefault();
                 handleSend();
               }}
-              className="p-3 bg-[#050608] border-t border-white/10 flex items-center gap-3"
+              className="p-3 bg-[#050608] flex items-center gap-3"
             >
               <span className="text-[#00FF66] font-bold pl-2 select-none">
                 sliss@systems:~$
@@ -514,7 +514,7 @@ export default function CommandPalette({ onNavigate, isOpen: propIsOpen, setIsOp
             </form>
 
             {/* Footer Status Bar */}
-            <div className="px-5 py-2 bg-[#030406] border-t border-white/5 flex flex-wrap items-center justify-between text-[10px] text-zinc-500 gap-2">
+            <div className="px-5 py-2 bg-[#030406] flex flex-wrap items-center justify-between text-[10px] text-zinc-500 gap-2">
               <div className="flex items-center gap-3">
                 <span>SLISS Core Terminal Mimarisi</span>
                 <span>·</span>

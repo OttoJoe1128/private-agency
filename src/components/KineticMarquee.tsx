@@ -57,7 +57,7 @@ export default function KineticMarquee() {
   const text2 = "PHYSICAL COMPUTING · ESP-IDF FREERTOS · OFFSCREEN CANVAS · ZERO ABSTRACTION BLOAT · SOP TOPOLOGY · ";
 
   return (
-    <div className="relative py-14 md:py-20 bg-[#0A0A0A] border-y border-white/10 overflow-hidden select-none">
+    <div className="relative py-14 md:py-20 bg-[#0A0A0A] overflow-hidden select-none">
       {/* Top Kinetic Ribbon */}
       <div className="flex whitespace-nowrap will-change-transform mb-4 md:mb-6" ref={topTrackRef}>
         <span className="text-4xl sm:text-5xl md:text-7xl font-black font-display tracking-tight text-white uppercase opacity-95">

@@ -21,7 +21,7 @@ export default function CommitTicker({ commits }: CommitTickerProps) {
   const displayCommits = commits.length > 0 ? [...commits, ...commits, ...commits] : [];
 
   return (
-    <div className="w-full bg-[#030406] border-y border-white/10 overflow-hidden select-none py-3.5 group">
+    <div className="w-full bg-[#030406] overflow-hidden select-none py-3.5 group">
       <div className="max-w-7xl mx-auto px-6 mb-2 flex items-center justify-between text-xs font-mono text-zinc-500">
         <div className="flex items-center gap-2">
           <GitCommit className="w-3.5 h-3.5 text-emerald-400" />
@@ -50,7 +50,7 @@ export default function CommitTicker({ commits }: CommitTickerProps) {
               href={c.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2.5 px-3 py-1.5 bg-[#080b10] hover:bg-[#101520] border border-white/10 hover:border-emerald-500/50 text-xs font-mono text-zinc-300 transition-colors shrink-0 group/item"
+              className="inline-flex items-center gap-2.5 px-3 py-1.5 bg-[#080b10] hover:bg-[#101520] text-xs font-mono text-zinc-300 transition-colors shrink-0 group/item"
             >
               <span className="px-1.5 py-0.5 bg-white/10 text-emerald-400 font-bold text-[11px]">
                 {c.shortSha}

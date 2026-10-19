@@ -22,7 +22,7 @@ export default function Hero({ onNavigate }: HeroProps) {
   const titleWords = ['Engineering', 'Living', 'Systems.'];
 
   return (
-    <section id="hero" className="relative pt-16 pb-24 md:pt-24 md:pb-32 border-b border-white/10 bg-[#0D0D0D]">
+    <section id="hero" className="relative pt-16 pb-24 md:pt-24 md:pb-32 bg-[#0D0D0D]">
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         
         {/* Hero Main Grid */}
@@ -54,11 +54,11 @@ export default function Hero({ onNavigate }: HeroProps) {
                 </p>
 
                 {/* Clean CTAs */}
-                <div className="pt-8 border-t border-white/10 flex flex-wrap items-center gap-4">
+                <div className="pt-8 flex flex-wrap items-center gap-4">
                   <button
                     onClick={() => handleCtaClick('case-studies')}
                     onMouseEnter={() => sound.playHover()}
-                    className="px-8 py-4 bg-white text-black font-mono font-bold text-xs tracking-wider uppercase flex items-center gap-3 hover:bg-zinc-200 transition-colors border border-white cursor-pointer active:scale-95"
+                    className="px-8 py-4 bg-white text-black font-mono font-bold text-xs tracking-wider uppercase flex items-center gap-3 hover:bg-zinc-200 transition-colors cursor-pointer active:scale-95"
                     data-cursor="NAVIGATE"
                   >
                     <span>Sistemleri İncele</span>
@@ -68,7 +68,7 @@ export default function Hero({ onNavigate }: HeroProps) {
                   <button
                     onClick={() => handleCtaClick('capabilities')}
                     onMouseEnter={() => sound.playHover()}
-                    className="px-8 py-4 border border-white/30 text-white font-mono text-xs tracking-wider uppercase flex items-center gap-3 hover:bg-white/10 hover:border-white transition-colors cursor-pointer active:scale-95"
+                    className="px-8 py-4 bg-white/10 text-white font-mono text-xs tracking-wider uppercase flex items-center gap-3 hover:bg-white/20 transition-colors cursor-pointer active:scale-95"
                     data-cursor="WARP 3D"
                   >
                     <span>Disiplinleri Keşfet</span>
@@ -81,8 +81,8 @@ export default function Hero({ onNavigate }: HeroProps) {
 
           {/* Right Column: Architectural Blueprint Canvas Mount */}
           <div className="lg:col-span-5 flex flex-col justify-start">
-            <div className="relative border border-white/15 bg-[#090b0e] p-2">
-              <div className="flex items-center justify-between px-3 py-2 bg-[#060709] border-b border-white/10 text-xs font-mono text-zinc-400 mb-2">
+            <div className="relative bg-[#090b0e] p-2">
+              <div className="flex items-center justify-between px-3 py-2 bg-[#060709] text-xs font-mono text-zinc-400 mb-2">
                 <span className="font-medium text-white">Etkileşimli Ağ Topolojisi</span>
                 <span className="text-zinc-500 text-[11px]">Canlı Simülasyon</span>
               </div>

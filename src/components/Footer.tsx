@@ -6,9 +6,9 @@ interface FooterProps {
 
 export default function Footer({ onNavigate }: FooterProps) {
   return (
-    <footer className="w-full bg-[#090A0C] border-t border-white/10 py-16 text-zinc-400">
+    <footer className="w-full bg-[#090A0C] py-16 text-zinc-400">
       <div className="max-w-7xl mx-auto px-6">
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-8 pb-10 border-b border-white/10">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-8 pb-10">
           <div>
             <div className="flex items-center gap-2 mb-2">
               <span className="w-2 h-2 bg-[#FF4500]" />

@@ -491,11 +491,11 @@ export default function CaseStudies() {
     <section
       id="case-studies"
       ref={containerRef}
-      className="relative min-h-screen bg-[#0D0D0D] border-b border-white/10 overflow-hidden"
+      className="relative min-h-screen bg-[#0D0D0D] overflow-hidden"
       data-cursor="SCROLL X"
     >
       {/* Top Architectural Navigation & Telemetry Bar */}
-      <div className="z-30 w-full bg-[#0D0D0D]/95 backdrop-blur border-b border-white/10 px-6 sm:px-8 py-4 flex flex-wrap items-center justify-between gap-4">
+      <div className="z-30 w-full bg-[#0D0D0D]/95 backdrop-blur px-6 sm:px-8 py-4 flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-zinc-400">
             <span className="w-2 h-2 bg-[#FF4500]" />
@@ -513,10 +513,10 @@ export default function CaseStudies() {
             <button
               key={cs.id}
               onClick={() => jumpToProject(idx)}
-              className={`px-3 py-1 text-xs font-mono transition-none cursor-pointer border ${
+              className={`px-3 py-1 text-xs font-mono transition-none cursor-pointer ${
                 activeProjectIndex === idx
-                  ? 'border-white bg-white text-black font-bold'
-                  : 'border-white/10 text-zinc-400 hover:text-white hover:border-white/30'
+                  ? 'bg-white text-black font-bold'
+                  : 'text-zinc-400 hover:text-white'
               }`}
             >
               0{idx + 1}. {cs.client}
@@ -545,7 +545,7 @@ export default function CaseStudies() {
             >
               
               {/* Asymmetric Magazine Layout: Bold Editorial Header */}
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-start pb-8 border-b border-white/10 mb-8">
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-start pb-8 mb-8">
                 
                 {/* Left Column: Gigantic Project Number & Title */}
                 <div className="lg:col-span-5 flex flex-col justify-between">
@@ -578,7 +578,7 @@ export default function CaseStudies() {
                   </div>
 
                   {/* Tech Stack Unboxed */}
-                  <div className="pt-6 border-t border-white/10 mt-6">
+                  <div className="pt-6 mt-6">
                     <span className="text-[10px] font-mono text-zinc-500 uppercase tracking-widest block mb-2">
                       Kullanılan Teknolojiler:
                     </span>
@@ -637,7 +637,7 @@ export default function CaseStudies() {
               </div>
 
               {/* Metrics Strip */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-4 bg-[#090b0e] border border-white/10 mb-8">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-4 bg-[#090b0e] mb-8">
                 {project.metrics.map((m, mIdx) => (
                   <div key={mIdx}>
                     <span className="text-[10px] font-mono text-zinc-500 uppercase block mb-1">{m.label}</span>

@@ -33,11 +33,11 @@ export default function GitHubTelemetryLab() {
   }, []);
 
   return (
-    <section id="manifesto" className="py-20 md:py-28 border-b border-white/10 bg-[#060709] relative">
+    <section id="manifesto" className="py-20 md:py-28 bg-[#060709] relative">
       <div className="max-w-7xl mx-auto px-6 sm:px-8">
         
         {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 pb-8 border-b border-white/10">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 pb-8">
           <div>
             <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-zinc-500 mb-3">
               <Github className="w-4 h-4 text-white" />
@@ -51,18 +51,18 @@ export default function GitHubTelemetryLab() {
           </div>
 
           {/* User Metrics & Telemetry Bar */}
-          <div className="bg-[#090b0e] border border-white/10 p-4 font-mono text-xs text-zinc-400 flex flex-wrap items-center gap-6">
+          <div className="bg-[#090b0e] p-4 font-mono text-xs text-zinc-400 flex flex-wrap items-center gap-6">
             <div>
               <span className="text-[10px] text-zinc-500 uppercase block mb-0.5">KULLANICI:</span>
               <span className="text-white font-bold">@{data?.username || 'OttoJoe1128'}</span>
             </div>
-            <div className="border-l border-white/10 pl-6">
+            <div className="pl-6">
               <span className="text-[10px] text-zinc-500 uppercase block mb-0.5">YILLIK KATKI:</span>
               <span className="text-emerald-400 font-bold tabular-nums">
                 {data?.totalContributions ? data.totalContributions.toLocaleString() : '1,428'} Commit / PR
               </span>
             </div>
-            <div className="border-l border-white/10 pl-6">
+            <div className="pl-6">
               <span className="text-[10px] text-zinc-500 uppercase block mb-0.5">ÖNBELLEK:</span>
               <span className="text-sky-400 font-bold">3600s Edge ISR</span>
             </div>
@@ -71,7 +71,7 @@ export default function GitHubTelemetryLab() {
 
         {/* Language Breakdown Strip */}
         {data?.languages && data.languages.length > 0 && (
-          <div className="mb-6 bg-[#080b10] border border-white/10 p-4 font-mono text-xs">
+          <div className="mb-6 bg-[#080b10] p-4 font-mono text-xs">
             <div className="flex items-center justify-between mb-2 text-zinc-400">
               <span className="text-[11px] text-zinc-500 uppercase">Baskın Programlama Dilleri:</span>
               <span className="text-[11px] text-zinc-500">GraphQL Telemetri Analizi</span>

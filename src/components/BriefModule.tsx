@@ -293,11 +293,11 @@ Sistem Durumu: DOĞRULANDI & ARŞİVLENDİ [200 OK]
   };
 
   return (
-    <section id="brief-module" className="py-24 border-y border-zinc-900 bg-[#060709] bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:40px_40px] select-text">
-      <div className="max-w-7xl mx-auto px-6 sm:px-8 border-x border-zinc-900">
+    <section id="brief-module" className="py-24 bg-[#060709] bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:40px_40px] select-text">
+      <div className="max-w-7xl mx-auto px-6 sm:px-8">
         
         {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-14 pb-8 border-b border-zinc-900 px-8 pt-14">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-14 pb-8 px-8 pt-14">
           <div>
             <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-zinc-500 mb-2">
               <span className="text-white font-bold">Analitik Brief &amp; Şartname</span>
@@ -309,7 +309,7 @@ Sistem Durumu: DOĞRULANDI & ARŞİVLENDİ [200 OK]
             </h2>
           </div>
 
-          <div className="max-w-md text-xs font-mono text-zinc-400 bg-[#090b0e] p-4 border border-zinc-800">
+          <div className="max-w-md text-xs font-mono text-zinc-400 bg-[#090b0e] p-4">
             <div className="flex items-center justify-between mb-1">
               <span className="text-emerald-400 font-bold">Şartname Şeması:</span>
               <span className="text-[10px] text-zinc-500 uppercase">{metrics.level.replace('// ', '')}</span>
@@ -322,7 +322,7 @@ Sistem Durumu: DOĞRULANDI & ARŞİVLENDİ [200 OK]
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           
           {/* Left Column: Parametric Selection Matrix */}
-          <div className="lg:col-span-7 bg-[#090b0e] border border-white/10 p-6 md:p-8">
+          <div className="lg:col-span-7 bg-[#090b0e] p-6 md:p-8">
             <form onSubmit={handleSubmit} className="space-y-8">
               
               {/* 1. Sistem İhtiyacı */}
@@ -341,10 +341,10 @@ Sistem Durumu: DOĞRULANDI & ARŞİVLENDİ [200 OK]
                       type="button"
                       key={item.id}
                       onClick={() => setFormData({ ...formData, systemNeed: item.id })}
-                      className={`p-3.5 text-left border text-xs font-mono transition-none cursor-pointer flex flex-col justify-between ${
+                      className={`p-3.5 text-left text-xs font-mono transition-none cursor-pointer flex flex-col justify-between ${
                         formData.systemNeed === item.id
-                          ? 'border-[#00FF66] bg-[#00FF66]/10 text-white shadow-[0_0_20px_rgba(0,255,102,0.1)]'
-                          : 'border-white/10 bg-[#060709] text-zinc-400 hover:text-white hover:border-white/30'
+                          ? 'bg-[#00FF66]/10 text-white shadow-[0_0_20px_rgba(0,255,102,0.1)]'
+                          : 'bg-[#060709] text-zinc-400 hover:text-white'
                       }`}
                     >
                       <div>
@@ -373,20 +373,20 @@ Sistem Durumu: DOĞRULANDI & ARŞİVLENDİ [200 OK]
                       type="button"
                       key={scale.id}
                       onClick={() => setFormData({ ...formData, throughputScale: scale.id })}
-                      className={`w-full p-3.5 text-left border text-xs font-mono transition-none cursor-pointer flex flex-col sm:flex-row sm:items-center justify-between gap-2 ${
+                      className={`w-full p-3.5 text-left text-xs font-mono transition-none cursor-pointer flex flex-col sm:flex-row sm:items-center justify-between gap-2 ${
                         formData.throughputScale === scale.id
-                          ? 'border-white bg-white text-black font-semibold'
-                          : 'border-white/10 bg-[#060709] text-zinc-400 hover:text-white hover:border-white/30'
+                          ? 'bg-white text-black font-semibold'
+                          : 'bg-[#060709] text-zinc-400 hover:text-white'
                       }`}
                     >
                       <div>
                         <span className="font-bold block text-sm">{scale.title}</span>
                         <span className="text-[11px] opacity-80 block mt-0.5">{scale.detail}</span>
                       </div>
-                      <span className={`px-2.5 py-1 text-[11px] font-mono font-bold shrink-0 self-start sm:self-auto border ${
+                      <span className={`px-2.5 py-1 text-[11px] font-mono font-bold shrink-0 self-start sm:self-auto ${
                         formData.throughputScale === scale.id
-                          ? 'bg-black text-white border-black'
-                          : 'bg-white/10 text-white border-white/20'
+                          ? 'bg-black text-white'
+                          : 'bg-white/10 text-white'
                       }`}>
                         {scale.metric}
                       </span>
@@ -411,10 +411,10 @@ Sistem Durumu: DOĞRULANDI & ARŞİVLENDİ [200 OK]
                       type="button"
                       key={phys.id}
                       onClick={() => setFormData({ ...formData, physicalIntegration: phys.id })}
-                      className={`p-3 text-left border text-xs font-mono transition-none cursor-pointer flex flex-col justify-between ${
+                      className={`p-3 text-left text-xs font-mono transition-none cursor-pointer flex flex-col justify-between ${
                         formData.physicalIntegration === phys.id
-                          ? 'border-[#00FF66] bg-[#00FF66]/10 text-white font-semibold'
-                          : 'border-white/10 bg-[#060709] text-zinc-400 hover:text-white hover:border-white/30'
+                          ? 'bg-[#00FF66]/10 text-white font-semibold'
+                          : 'bg-[#060709] text-zinc-400 hover:text-white'
                       }`}
                     >
                       <div>
@@ -443,10 +443,10 @@ Sistem Durumu: DOĞRULANDI & ARŞİVLENDİ [200 OK]
                       type="button"
                       key={time.id}
                       onClick={() => setFormData({ ...formData, timelineScale: time.id })}
-                      className={`p-3 text-left border text-xs font-mono transition-none cursor-pointer flex flex-col justify-between ${
+                      className={`p-3 text-left text-xs font-mono transition-none cursor-pointer flex flex-col justify-between ${
                         formData.timelineScale === time.id
-                          ? 'border-white bg-white text-black font-semibold'
-                          : 'border-white/10 bg-[#060709] text-zinc-400 hover:text-white hover:border-white/30'
+                          ? 'bg-white text-black font-semibold'
+                          : 'bg-[#060709] text-zinc-400 hover:text-white'
                       }`}
                     >
                       <div>
@@ -460,7 +460,7 @@ Sistem Durumu: DOĞRULANDI & ARŞİVLENDİ [200 OK]
               </div>
 
               {/* 5. Kurum & İletişim Bilgileri */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t border-white/10">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4">
                 <div>
                   <label className="text-xs font-mono uppercase tracking-wider text-zinc-400 block mb-2">
                     Kurum / Şirket / Girişimci Adı
@@ -485,7 +485,7 @@ Sistem Durumu: DOĞRULANDI & ARŞİVLENDİ [200 OK]
                     placeholder="ornek@alanadi.com"
                     value={formData.contactEndpoint}
                     onChange={(e) => setFormData({ ...formData, contactEndpoint: e.target.value })}
-                    className="w-full bg-[#060709] border border-white/15 px-3.5 py-2.5 text-sm font-mono text-white placeholder-zinc-600 focus:outline-none focus:border-[#00FF66]"
+                    className="w-full bg-[#060709] px-3.5 py-2.5 text-sm font-mono text-white placeholder-zinc-600 focus:outline-none focus:border-[#00FF66]"
                   />
                 </div>
               </div>
@@ -500,7 +500,7 @@ Sistem Durumu: DOĞRULANDI & ARŞİVLENDİ [200 OK]
                   placeholder="Mevcut sensör modelleri, PLC/Modbus bağlantıları, hedef SLA gecikmeleri..."
                   value={formData.architecturalNotes}
                   onChange={(e) => setFormData({ ...formData, architecturalNotes: e.target.value })}
-                  className="w-full bg-[#060709] border border-white/15 p-3 text-sm font-mono text-white placeholder-zinc-600 focus:outline-none focus:border-[#00FF66] leading-relaxed"
+                  className="w-full bg-[#060709] p-3 text-sm font-mono text-white placeholder-zinc-600 focus:outline-none focus:border-[#00FF66] leading-relaxed"
                 />
               </div>
 
@@ -528,16 +528,16 @@ Sistem Durumu: DOĞRULANDI & ARŞİVLENDİ [200 OK]
           <div className="lg:col-span-5 space-y-6">
             
             {/* Live Code & Schema Inspector */}
-            <div className="bg-[#090b0e] border border-white/10 p-6">
+            <div className="bg-[#090b0e] p-6">
               
               {/* Header with Switchers */}
-              <div className="flex items-center justify-between pb-3 border-b border-white/10 mb-4 text-xs font-mono">
+              <div className="flex items-center justify-between pb-3 mb-4 text-xs font-mono">
                 <div className="flex items-center gap-2">
                   <Terminal className="w-4 h-4 text-amber-400" />
                   <span className="text-white font-bold">/api/v1/system-brief</span>
                 </div>
 
-                <div className="flex items-center gap-1 bg-[#060709] p-0.5 border border-white/10">
+                <div className="flex items-center gap-1 bg-[#060709] p-0.5">
                   <button
                     onClick={() => setActiveCodeTab('json')}
                     className={`px-2.5 py-1 text-[11px] font-mono cursor-pointer ${
@@ -566,14 +566,14 @@ Sistem Durumu: DOĞRULANDI & ARŞİVLENDİ [200 OK]
               </div>
 
               {/* Code Pre Box */}
-              <pre className="text-xs font-mono text-zinc-300 overflow-x-auto p-4 bg-[#050608] border border-white/5 leading-relaxed max-h-[340px]">
+              <pre className="text-xs font-mono text-zinc-300 overflow-x-auto p-4 bg-[#050608] leading-relaxed max-h-[340px]">
                 {activeCodeTab === 'json' && JSON.stringify(activePayload, null, 2)}
                 {activeCodeTab === 'pydantic' && pydanticSnippet}
                 {activeCodeTab === 'curl' && curlSnippet}
               </pre>
 
               {/* Quick Code Actions */}
-              <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-xs font-mono">
+              <div className="mt-4 pt-3 flex items-center justify-between text-xs font-mono">
                 <button
                   onClick={handleCopyCode}
                   className="px-3 py-1.5 border border-white/20 text-zinc-300 hover:text-white hover:border-white/40 flex items-center gap-1.5 transition-none cursor-pointer"
@@ -593,10 +593,10 @@ Sistem Durumu: DOĞRULANDI & ARŞİVLENDİ [200 OK]
             </div>
 
             {/* Brutalist Architectural Commission Receipt (Generated upon submission or preview) */}
-            <div className="bg-[#0b0e14] border-2 border-dashed border-white/30 p-6 md:p-8 font-mono text-xs relative overflow-hidden">
+            <div className="bg-[#0b0e14] p-6 md:p-8 font-mono text-xs relative overflow-hidden">
               
               {/* Receipt Top Stamp */}
-              <div className="flex items-center justify-between border-b border-dashed border-white/20 pb-4 mb-4">
+              <div className="flex items-center justify-between pb-4 mb-4">
                 <div>
                   <div className="text-[10px] text-[#00FF66] uppercase tracking-widest font-bold">
                     Engineering Living Systems · Mimari Şartname Fişi
@@ -612,7 +612,7 @@ Sistem Durumu: DOĞRULANDI & ARŞİVLENDİ [200 OK]
               </div>
 
               {/* Receipt Parameters Grid */}
-              <div className="space-y-3 divide-y divide-dashed divide-white/10 text-zinc-300">
+              <div className="space-y-3 text-zinc-300">
                 <div className="flex justify-between pt-2">
                   <span className="text-zinc-500">İSTEMCİ / KURUM:</span>
                   <span className="text-white font-bold truncate max-w-[200px]">{activePayload.client_entity}</span>
@@ -646,7 +646,7 @@ Sistem Durumu: DOĞRULANDI & ARŞİVLENDİ [200 OK]
               </div>
 
               {/* Cryptographic Signature Footer */}
-              <div className="border-t border-dashed border-white/20 pt-4 mt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-[10px] text-zinc-500">
+              <div className="pt-4 mt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-[10px] text-zinc-500">
                 <div>
                   <span>ZAMAN: {activePayload.timestamp.substring(0, 19).replace('T', ' ')} UTC</span>
                   <span className="block text-[9px] text-zinc-600 font-mono mt-0.5">
@@ -675,7 +675,7 @@ Sistem Durumu: DOĞRULANDI & ARŞİVLENDİ [200 OK]
             </div>
 
             {/* Direct Communication Channels */}
-            <div className="p-5 bg-[#0a0d14] border border-white/10 flex items-center justify-between gap-4 text-xs font-mono">
+            <div className="p-5 bg-[#0a0d14] flex items-center justify-between gap-4 text-xs font-mono">
               <div>
                 <span className="text-white font-bold block mb-0.5">DOĞRUDAN MİMAR İLETİŞİMİ:</span>
                 <span className="text-zinc-400 text-[11px]">Sistem briefi öncelikli inceleme kuyruğuna alınır.</span>
@@ -684,7 +684,7 @@ Sistem Durumu: DOĞRULANDI & ARŞİVLENDİ [200 OK]
                 href={`mailto:sircaedebiyat@gmail.com?subject=Mimari%20Şartname%20${activePayload.specification_id}&body=${encodeURIComponent(
                   `Şartname ID: ${activePayload.specification_id}\nİstemci: ${activePayload.client_entity}\nSistem: ${activePayload.system_need}\nGecikme: ${activePayload.throughput_scale}\nDonanım: ${activePayload.physical_integration}`
                 )}`}
-                className="px-3.5 py-2 bg-white/10 hover:bg-white hover:text-black text-white border border-white/20 font-bold transition-none shrink-0"
+                className="px-3.5 py-2 bg-white/10 hover:bg-white hover:text-black text-white font-bold transition-none shrink-0"
               >
                 MİMARA İLET ↗
               </a>

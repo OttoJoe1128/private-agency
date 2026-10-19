@@ -341,24 +341,22 @@ export default function GitHub3DMatrix({ weeks }: MatrixProps) {
   }, [weeks]);
 
   return (
-    <div className="relative w-full h-[360px] md:h-[420px] bg-[#05070a] border border-white/10 overflow-hidden select-none">
-      {canUseWebGL ? (
+    <div className="relative w-full h-[50vh] min-h-[400px] bg-[#05070a] overflow-hidden select-none">
+      {!weeks || weeks.length === 0 ? (
+        <div className="absolute inset-0 flex items-center justify-center text-zinc-500 font-mono text-sm">
+          Loading Telemetry...
+        </div>
+      ) : canUseWebGL ? (
         <SafeWebGLBoundary fallback={<FallbackIsometricMatrix weeks={displayedWeeks} />}>
           <Canvas
-            camera={{ position: [0, 14, 22], fov: 42, near: 0.1, far: 100 }}
+            camera={{ position: [0, 5, 10], fov: 50, near: 0.1, far: 100 }}
             shadows
             gl={{ antialias: true, powerPreference: 'high-performance' }}
           >
             <color attach="background" args={['#05070a']} />
-            <ambientLight intensity={0.9} />
-            <directionalLight
-              position={[10, 20, 15]}
-              intensity={1.8}
-              castShadow
-              shadow-mapSize={[1024, 1024]}
-            />
-            <pointLight position={[-15, 8, -10]} intensity={1.2} color="#00ff66" />
-            <pointLight position={[15, 6, 10]} intensity={0.8} color="#38bdf8" />
+            <ambientLight intensity={0.5} />
+            <directionalLight position={[10, 10, 10]} intensity={1.5} castShadow />
+            <pointLight position={[-10, 5, -5]} intensity={0.8} color="#00ff66" />
 
             <MonolithGrid weeks={displayedWeeks} />
           </Canvas>
@@ -368,7 +366,7 @@ export default function GitHub3DMatrix({ weeks }: MatrixProps) {
       )}
 
       {/* Floating Viewport Legend */}
-      <div className="absolute top-4 left-4 z-10 flex flex-wrap items-center gap-4 text-xs font-mono text-zinc-400 bg-black/60 px-3.5 py-2 border border-white/10 backdrop-blur-sm">
+      <div className="absolute top-4 left-4 z-10 flex flex-wrap items-center gap-4 text-xs font-mono text-zinc-400 bg-black/60 px-3.5 py-2 backdrop-blur-sm">
         <span className="text-white font-bold">3D Katkı Matrisi (365 Gün)</span>
         <span className="text-zinc-600">·</span>
         <div className="flex items-center gap-1.5">
@@ -379,10 +377,6 @@ export default function GitHub3DMatrix({ weeks }: MatrixProps) {
           <span className="w-2.5 h-2.5 bg-[#00ff66]" />
           <span className="text-[10px] text-zinc-500">Çok</span>
         </div>
-      </div>
-
-      <div className="absolute bottom-3 right-4 z-10 text-[10px] font-mono text-zinc-500 hidden sm:block">
-        Fareyi sütunların üzerine getirerek katkı ayrıntılarını inceleyin
       </div>
     </div>
   );
